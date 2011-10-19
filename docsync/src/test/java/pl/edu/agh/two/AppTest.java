@@ -40,6 +40,6 @@ public class AppTest {
 	@Test
 	public void testValidAdd() throws Exception {
 		log.debug("Checking whether 1 + 1 = 2 (using valid method...");
-		assertEquals(app.invalidAdd(1, 1), 2);
+		assertEquals(app.validAdd(1, 1), 2);
 	}
 }
