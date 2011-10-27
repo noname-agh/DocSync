@@ -1,5 +1,7 @@
 package pl.edu.agh.two.ws.test;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 import pl.edu.agh.two.ws.CloudStorage;
 import pl.edu.agh.two.ws.server.CloudStorageImpl;
@@ -9,13 +11,30 @@ public class RssChannelsServerTest extends TestCase {
 	public void testAddChannel() {
 		CloudStorage c = new CloudStorageImpl();
 		
-		c.addChannel("bleble");
+		String address = "bleble";
+		c.addChannel(address);
 		
+		List<String> channels = c.getRssSubscriptionsList();
 		
+		assertEquals(channels.size(), 1);
+		assertEquals(channels.get(0), address);
 	}
 
 	public void testRemoveChannel() {
-		fail("Not yet implemented");
+		CloudStorage c = new CloudStorageImpl();
+		
+		String address = "bleble";
+		c.addChannel(address);
+		
+		List<String> channels = c.getRssSubscriptionsList();
+		
+		assertEquals(channels.size(), 1);
+		assertEquals(channels.get(0), address);
+		
+		c.removeChannel(address);
+		
+		channels = c.getRssSubscriptionsList();
+		
+		assertEquals(channels.size(), 0);
 	}
-
 }
