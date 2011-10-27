@@ -14,7 +14,7 @@ public class RssChannelsServerTest extends TestCase {
 		String address = "bleble";
 		c.addChannel(address);
 		
-		List<String> channels = c.getRssSubscriptionsList();
+		List<String> channels = c.getRssChannelList();
 		
 		assertEquals(channels.size(), 1);
 		assertEquals(channels.get(0), address);
@@ -26,14 +26,14 @@ public class RssChannelsServerTest extends TestCase {
 		String address = "bleble";
 		c.addChannel(address);
 		
-		List<String> channels = c.getRssSubscriptionsList();
+		List<String> channels = c.getRssChannelList();
 		
 		assertEquals(channels.size(), 1);
 		assertEquals(channels.get(0), address);
 		
 		c.removeChannel(address);
 		
-		channels = c.getRssSubscriptionsList();
+		channels = c.getRssChannelList();
 		
 		assertEquals(channels.size(), 0);
 	}

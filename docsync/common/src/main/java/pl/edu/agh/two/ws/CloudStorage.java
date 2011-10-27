@@ -44,4 +44,9 @@ public interface CloudStorage {
 	void addChannel(String address);
 	
 	void removeChannel(String address);
+	
+	void addRSSItem(RSSItem item);
+	
+	void removeRSSItem(RSSItem item);
+	
 }
