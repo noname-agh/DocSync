@@ -1,6 +1,8 @@
 package pl.edu.agh.two.ws.server;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
+	private static final Logger log = LoggerFactory.getLogger(CloudStorageImpl.class);
 
 	private EntityManagerFactory emf;
 
@@ -116,13 +119,16 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public void pushMetadata(CloudFileInfo fileInfo) {
+		log.debug("Pushing metadata for file " + fileInfo);
 		CloudMetadata md = fileInfo.getMetadata();
 		EntityManager em = emf.createEntityManager();
+		CloudFile file = em.find(CloudFile.class, fileInfo.getHash());
+		file.setMetadata(md);
 		em.getTransaction().begin();
-		em.persist(md);
-		em.persist(fileInfo);
+		em.merge(file);
+		//em.persist(md);
+		//em.persist(fileInfo);
 		em.getTransaction().commit();
-
 	}
 
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
@@ -131,8 +137,14 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public List<String> getRssSubscriptionsList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> subscriptionsList = null;
+		try {
+			EntityManager em = emf.createEntityManager();
+			subscriptionsList = em.createQuery("select c.address from RssChannel c", String.class).getResultList();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return subscriptionsList;
 	}
 
 	@Override
