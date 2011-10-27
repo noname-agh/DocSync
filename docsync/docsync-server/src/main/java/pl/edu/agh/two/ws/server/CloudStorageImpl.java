@@ -134,4 +134,16 @@ public class CloudStorageImpl implements CloudStorage {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void addChannel(String address) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeChannel(String address) {
+		// TODO Auto-generated method stub
+		
+	}
 }
