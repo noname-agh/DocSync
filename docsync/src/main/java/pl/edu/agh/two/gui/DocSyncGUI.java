@@ -2,9 +2,12 @@ package pl.edu.agh.two.gui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 import pl.edu.agh.two.gui.actions.ExitAction;
 
 import javax.swing.*;
+
 import java.awt.*;
 
 /**
@@ -42,7 +45,14 @@ public class DocSyncGUI extends JFrame {
 		initMenu();
 
 		frame.setLayout(new BorderLayout());
-
+		
+		JTable table = new JTable(new FileTableModel());
+        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        table.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+        frame.add(scrollPane);
+		
+	
 	}
 
 	private static void initMenu() {
@@ -61,4 +71,5 @@ public class DocSyncGUI extends JFrame {
 
 		frame.setJMenuBar(menuBar);
 	}
+		
 }
