@@ -137,13 +137,25 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public void addChannel(String address) {
-		// TODO Auto-generated method stub
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
 		
+		RssChannel channel = new RssChannel();
+		channel.setAddress(address);
+		em.persist(channel);
+		
+		em.getTransaction().commit();
 	}
 
 	@Override
 	public void removeChannel(String address) {
-		// TODO Auto-generated method stub
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
 		
+		RssChannel channel = em.find(RssChannel.class, address);
+		if(channel != null)
+			em.remove(channel);
+		
+		em.getTransaction().commit();
 	}
 }
