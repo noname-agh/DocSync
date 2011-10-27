@@ -2,6 +2,9 @@ package pl.edu.agh.two.ws;
 
 import java.util.List;
 
+import javax.jws.WebService;
+
+@WebService
 public interface CloudStorage {
 
 	void addFile(CloudFile file);
