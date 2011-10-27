@@ -39,7 +39,7 @@ public interface CloudStorage {
 
 	//CloudMetadata pullMetadata(CloudFileInfo file);
 	
-	List<String> getRssSubscriptionsList();
+	List<String> getRssChannelList();
 	
 	void addChannel(String address);
 	
