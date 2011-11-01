@@ -12,19 +12,19 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<build>
 		<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>2.3.2</version>
-			<configuration>
-				<source>1.6</source>
-				<target>1.6</target>
-			</configuration>
-		</plugin>
-	</plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 
 
@@ -47,6 +47,22 @@
 			<artifactId>testng</artifactId>
 			<version>6.2.1</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.icepdf</groupId>
+			<artifactId>core</artifactId>
+			<version>4.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/icepdf-core.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.icepdf</groupId>
+			<artifactId>viewer</artifactId>
+			<version>4.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/icepdf-viewer.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>
