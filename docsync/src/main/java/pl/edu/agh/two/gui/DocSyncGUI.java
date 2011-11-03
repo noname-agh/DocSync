@@ -3,6 +3,7 @@ package pl.edu.agh.two.gui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.gui.actions.ExitAction;
+import pl.edu.agh.two.gui.actions.ExternalFileOpenAction;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
@@ -60,6 +61,7 @@ public class DocSyncGUI extends JFrame {
 		menuBar.add(file);
 
 		JMenuItem openItem = new JMenuItem("Open");
+		openItem.addActionListener(new ExternalFileOpenAction());
 		file.add(openItem);
 
 		file.add(new JSeparator());
