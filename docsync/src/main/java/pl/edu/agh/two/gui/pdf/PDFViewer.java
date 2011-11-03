@@ -8,6 +8,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.gui.actions.SaveExitPdfAction;
 /**
@@ -27,9 +28,11 @@ public class PDFViewer extends JFrame {
 	private SwingController controller;
 	private SwingViewBuilder factory;
 	private JPanel viewComponentPanel;
+	private DocSyncFile file;
 
-	public PDFViewer() {
+	public PDFViewer(DocSyncFile file) {
 		super();
+		this.file = file;
 		init();
 		this.setVisible(true);
 	}
@@ -42,7 +45,7 @@ public class PDFViewer extends JFrame {
 			controller = new SwingController();
 			factory = new SwingViewBuilder(controller);
 			viewComponentPanel = factory.buildViewerPanel();
-			this.addWindowListener(new SaveExitPdfAction(controller));
+			this.addWindowListener(new SaveExitPdfAction(file, DocSyncGUI.getFrame().getFileList(), controller));
 			this.getContentPane().add(viewComponentPanel);
 			this.pack();
 		} catch (Exception ex) {
@@ -50,20 +53,12 @@ public class PDFViewer extends JFrame {
 		}
 	}
 
-	public void open(String filePath) {
+	public void open() {
+		String filePath = file.getPath();
 		try {
 			this.setTitle("PDFViewer [::] " + filePath);
 			controller.openDocument(filePath);
-		} catch (Exception ex) {
-			logger.error(ex.getMessage());
-		}
-	}
-
-	public void open(String filePath, int pageNr) {
-		try {
-			this.setTitle("PDFViewer [::] " + filePath);
-			controller.openDocument(filePath);
-			controller.goToDeltaPage(--pageNr);
+			controller.goToDeltaPage(((PDFMetadata)file.getMeta()).getPageNo()); // TODO: Uladnic
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 		}
