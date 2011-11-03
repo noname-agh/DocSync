@@ -3,8 +3,8 @@ package pl.edu.agh.two.interfaces;
 import pl.edu.agh.two.file.*;
 
 public interface IFileList {
-	public void open(File file);
-	public void delete(File file);
-	public void add(File file);
-	public void updateFile(File file, IMetadata metadata);
+	public void open(DocSyncFile file);
+	public void delete(DocSyncFile file);
+	public void add(DocSyncFile file);
+	public void updateFile(DocSyncFile file, IMetadata metadata);
 }
