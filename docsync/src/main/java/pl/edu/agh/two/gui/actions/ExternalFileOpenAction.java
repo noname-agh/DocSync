@@ -33,10 +33,9 @@ public class ExternalFileOpenAction implements ActionListener {
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			final File file = jc.getSelectedFile();
 			String fileName = file.getName();
-			log.debug(fileName);
+			log.debug("Opening " + fileName);
 			String ext = fileName.substring(fileName.lastIndexOf('.'));
 			if (ext.toLowerCase().equals(".pdf")) {
-				log.debug("pdf");
 				DocSyncFile f = new PDFDocSyncFile(file.getAbsolutePath());
 				fileList.add(f);
 			}
