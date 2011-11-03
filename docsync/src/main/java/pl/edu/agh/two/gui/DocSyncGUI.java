@@ -2,12 +2,10 @@ package pl.edu.agh.two.gui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 import pl.edu.agh.two.gui.actions.ExitAction;
+import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 /**
@@ -23,7 +21,8 @@ public class DocSyncGUI extends JFrame {
 	 */
 	private static final Logger log = LoggerFactory.getLogger(DocSyncGUI.class);
 
-	static DocSyncGUI frame;
+	private static DocSyncGUI frame;
+	private IFileList fileList;
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 
@@ -34,23 +33,23 @@ public class DocSyncGUI extends JFrame {
 	public static void createAndShowGUI() {
 		frame = new DocSyncGUI();
 		initGUI();
-		frame.setVisible(true);
+		getFrame().setVisible(true);
 	}
 
 	private static void initGUI() {
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle(TITLE);
-		frame.setSize(FRAME_DIMENSION);
+		getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getFrame().setTitle(TITLE);
+		getFrame().setSize(FRAME_DIMENSION);
 
 		initMenu();
 
-		frame.setLayout(new BorderLayout());
+		getFrame().setLayout(new BorderLayout());
 		
 		JTable table = new JTable(new FileTableModel());
         table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         table.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(table);
-        frame.add(scrollPane);
+        getFrame().add(scrollPane);
 		
 	
 	}
@@ -69,7 +68,14 @@ public class DocSyncGUI extends JFrame {
 		file.add(exitItem);
 		exitItem.addActionListener(new ExitAction());
 
-		frame.setJMenuBar(menuBar);
+		getFrame().setJMenuBar(menuBar);
 	}
-		
+
+	public static DocSyncGUI getFrame() {
+		return frame;
+	}
+
+	public IFileList getFileList() {
+		return fileList;
+	}
 }
