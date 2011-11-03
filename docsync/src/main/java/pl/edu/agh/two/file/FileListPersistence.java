@@ -1,12 +1,6 @@
 package pl.edu.agh.two.file;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
-import java.util.Arrays;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,21 +12,21 @@ public class FileListPersistence {
 		this.storagePath = storagePath;
 	}
 
-	public void save(List<String> list) throws IOException {
+	public void save(List<File> list) throws IOException {
 		FileOutputStream fos;
 		fos = new FileOutputStream(storagePath);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
-		oos.writeObject(new LinkedList<String>(list));
+		oos.writeObject(new LinkedList<File>(list));
 		fos.close();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> load() throws IOException {
+	public List<File> load() throws IOException {
 		FileInputStream fis;
 		fis = new FileInputStream(storagePath);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		try {
-			List<String> list = (List<String>) ois.readObject();
+			List<File> list = (List<File>) ois.readObject();
 			return list;
 		} catch (ClassNotFoundException e) {
 			throw new IOException(e);

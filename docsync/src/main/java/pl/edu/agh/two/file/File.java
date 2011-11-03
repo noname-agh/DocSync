@@ -1,9 +1,10 @@
 package pl.edu.agh.two.file;
 
-import java.lang.*;
-import pl.edu.agh.two.interfaces.*;
+import pl.edu.agh.two.interfaces.IMetadata;
 
-public abstract class File {
+import java.io.Serializable;
+
+public abstract class File implements Serializable {
 	protected String path;
 	protected String hash;
 	protected IMetadata meta;
