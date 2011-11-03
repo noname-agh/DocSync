@@ -1,6 +1,6 @@
 package pl.edu.agh.two.interfaces;
 
-import pl.edu.agh.two.file.File;
+import pl.edu.agh.two.file.DocSyncFile;
 
 public interface IFileList {
 	/**
@@ -17,24 +17,24 @@ public interface IFileList {
 	 * Otwarcie pliku z listy.
 	 * @param file
 	 */
-	public void open(File file);
+	public void open(DocSyncFile file);
 
 	/**
 	 * Usunięci pliku z listy
 	 * @param file
 	 */
-	public void delete(File file);
+	public void delete(DocSyncFile file);
 
 	/**
 	 * Dodanie pliku do listy
 	 * @param file
 	 */
-	public void add(File file);
+	public void add(DocSyncFile file);
 
 	/**
 	 * Aktualizacja metadanych dla pliku
 	 * @param file
 	 * @param metadata
 	 */
-	public void updateFile(File file, IMetadata metadata);
+	public void updateFile(DocSyncFile file, IMetadata metadata);
 }
