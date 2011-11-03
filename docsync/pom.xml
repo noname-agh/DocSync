@@ -1,32 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>pl.edu.agh.two</groupId>
 	<artifactId>docsync</artifactId>
+	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
 
-	<name>docsync</name>
+	<name>DocSync</name>
+
+	<modules>
+		<module>common</module>
+		<module>docsync-app</module>
+		<module>docsync-server</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 
 	<dependencies>
 		<dependency>
@@ -48,21 +40,17 @@
 			<version>6.2.1</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.icepdf</groupId>
-			<artifactId>core</artifactId>
-			<version>4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/icepdf-core.jar</systemPath>
-		</dependency>
-
-		<dependency>
-			<groupId>org.icepdf</groupId>
-			<artifactId>viewer</artifactId>
-			<version>4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/icepdf-viewer.jar</systemPath>
-		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
