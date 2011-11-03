@@ -11,5 +11,20 @@ public abstract class File implements Serializable {
 
 	public abstract void open();
 	public abstract void delete();
-	public abstract void update();
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public IMetadata getMeta() {
+		return meta;
+	}
+
+	public void setMeta(IMetadata meta) {
+		this.meta = meta;
+	}
 }
