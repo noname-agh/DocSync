@@ -1,10 +1,19 @@
 package pl.edu.agh.two.ws;
 
-public class CloudFileInfo {
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class CloudFileInfo implements Serializable {
+	private static final long serialVersionUID = 2340870229278373969L;
+	
+	@Id
 	private String hash;
 	private String name;
 	private CloudMetadata metadata;
-
+	
 	public String getHash() {
 		return hash;
 	}
