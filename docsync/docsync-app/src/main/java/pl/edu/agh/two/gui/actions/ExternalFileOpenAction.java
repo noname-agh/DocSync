@@ -8,6 +8,8 @@ import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -37,7 +39,12 @@ public class ExternalFileOpenAction implements ActionListener {
 			String ext = fileName.substring(fileName.lastIndexOf('.'));
 			if (ext.toLowerCase().equals(".pdf")) {
 				DocSyncFile f = new PDFDocSyncFile(file.getAbsolutePath());
-				fileList.add(f);
+				if(!fileList.contains(f))
+				{
+					fileList.add(f);
+					DocSyncGUI.getFrame();
+					DocSyncGUI.refreshFileList();
+				}
 			}
 		}
 	}

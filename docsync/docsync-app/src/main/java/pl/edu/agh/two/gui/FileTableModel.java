@@ -1,52 +1,77 @@
 package pl.edu.agh.two.gui;
-
+import pl.edu.agh.two.file.DocSyncFile;
+import java.util.LinkedList;
 import javax.swing.table.AbstractTableModel;
-import java.util.Date;
 
-class FileTableModel extends AbstractTableModel {
-	private String[] columnNames = {"Filename", "Path", "Date", "Selected"};
-	private Object[][] data = {{"SomeBook", "/mylib/books/SomeBook.pdf", new Date(), new Boolean(false)},
-			{"SomeArticle", "/mylib/articles/SomeArticle.pdf", new Date(), new Boolean(false)},};
+import pl.edu.agh.two.interfaces.IFileList;
+import pl.edu.agh.two.interfaces.IMetadata;
 
-	public int getColumnCount() {
-		return columnNames.length;
-	}
-
-	public int getRowCount() {
-		return data.length;
-	}
-
-	public String getColumnName(int col) {
-		return columnNames[col];
-	}
-
-	public Object getValueAt(int row, int col) {
-		return data[row][col];
-	}
-
-	public Class getColumnClass(int c) {
-		return getValueAt(0, c).getClass();
-	}
-
-	/*
-		 * Don't need to implement this method unless your table's
-		 * editable.
-		 */
-	public boolean isCellEditable(int row, int col) {
-		if (col == 0 || col == 3) {
-			return true;
-		} else {
-			return false;
+public class FileTableModel extends AbstractTableModel implements IFileList{
+	private static final long serialVersionUID = 1L;
+	protected LinkedList<DocSyncFile> files;
+	protected String[] filenames;
+	protected String[] columnNames = new String[] { "path"}; 
+	protected Class[] columnClasses = new Class[] { String.class};
+	
+	public FileTableModel() {
+	this.files = new LinkedList<DocSyncFile>();	
+	}	
+	public int getColumnCount() { return 1; } 	
+	
+	public int getRowCount() { return files.size(); } 	
+	
+	public String getColumnName(int col) { return columnNames[col]; }
+	
+	public Class getColumnClass(int col) { return columnClasses[col]; } 
+	
+		
+	
+	public Object getValueAt(int row, int col) { 
+		
+		switch(col) {
+			case 0: return files.get(row).getPath();				
+			default: return null;
 		}
 	}
-
-	/*
-		 * Don't need to implement this method unless your table's
-		 * data can change.
-		 */
-	public void setValueAt(Object value, int row, int col) {
-		data[row][col] = value;
-		fireTableCellUpdated(row, col);
+	
+	@Override
+	public boolean contains(DocSyncFile file)
+	{
+		return files.contains(file);
 	}
-
+	
+	@Override
+	public void saveList() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getList() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void open(DocSyncFile file) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void delete(DocSyncFile file) {
+		//TODO
+		
+	}
+	@Override
+	public void add(DocSyncFile file) {
+		
+			files.add(file);
+				
+	}
+	@Override
+	public void updateFile(DocSyncFile file, IMetadata metadata) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+		
+	
 }

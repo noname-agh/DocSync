@@ -33,6 +33,12 @@ public interface IFileList {
 	 * @param file
 	 */
 	public void add(DocSyncFile file);
+	/**
+	 * Sprawdzenie czy plik jest juz na liscie
+	 *
+	 * @param file
+	 */
+	public boolean contains(DocSyncFile file);
 
 	/**
 	 * Aktualizacja metadanych dla pliku

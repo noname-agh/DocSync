@@ -7,6 +7,8 @@ import pl.edu.agh.two.gui.actions.ExternalFileOpenAction;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+
 import java.awt.*;
 
 /**
@@ -23,7 +25,7 @@ public class DocSyncGUI extends JFrame {
 	private static final Logger log = LoggerFactory.getLogger(DocSyncGUI.class);
 
 	private static DocSyncGUI frame;
-	private IFileList fileList;
+	private static JTable fileList;
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 
@@ -46,10 +48,10 @@ public class DocSyncGUI extends JFrame {
 
 		getFrame().setLayout(new BorderLayout());
 
-		JTable table = new JTable(new FileTableModel());
-		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		table.setFillsViewportHeight(true);
-		JScrollPane scrollPane = new JScrollPane(table);
+		fileList = new JTable(new FileTableModel());
+		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		fileList.setFillsViewportHeight(true);
+		JScrollPane scrollPane = new JScrollPane(fileList);
 		getFrame().add(scrollPane);
 
 
@@ -78,6 +80,10 @@ public class DocSyncGUI extends JFrame {
 	}
 
 	public IFileList getFileList() {
-		return fileList;
+		return (IFileList) fileList.getModel();
 	}
+	
+	public static void refreshFileList() {
+	    	((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
+	    }
 }
