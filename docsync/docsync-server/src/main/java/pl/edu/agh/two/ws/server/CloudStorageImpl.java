@@ -21,7 +21,7 @@ import java.util.List;
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
 
-	private static final String SERVICE_URL = "http://localhost:3306/";
+	private static final String SERVICE_URL = "http://0.0.0.0:3306/";
 	private EntityManagerFactory emf;
 
 	public CloudStorageImpl(EntityManagerFactory emf) {
