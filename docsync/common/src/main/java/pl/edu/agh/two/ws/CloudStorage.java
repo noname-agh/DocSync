@@ -12,8 +12,28 @@ public interface CloudStorage {
 
 	List<CloudFileInfo> getFiles();
 
-	CloudFile getFileWithContent(CloudFileInfo file);
+	/**
+	 * Returns single file with content.
+	 * NOT IMPLEMENTED AND NOT NEEDED FOR Iteration 3.
+	 *
+	 * @param fileInfo fileInfo to fetch content
+	 * @return file with content
+	 */
+	CloudFile getFileWithContent(CloudFileInfo fileInfo);
 
-	void synchronizeMetadata(CloudFileInfo file);
+	/**
+	 * Returns all files with content.
+	 *
+	 * @return all files with content
+	 */
+	List<CloudFile> getAllFilesWithContent();
 
+	/**
+	 * Saves/updates metadata of a file in cloud storage.
+	 *
+	 * @param fileInfo file to save/update
+	 */
+	void pushMetadata(CloudFileInfo fileInfo);
+
+	//CloudMetadata pullMetadata(CloudFileInfo file);
 }

@@ -26,12 +26,17 @@ public class CloudStorageImpl implements CloudStorage {
 	}
 
 	@Override
-	public CloudFile getFileWithContent(CloudFileInfo file) {
+	public CloudFile getFileWithContent(CloudFileInfo fileInfo) {
 		throw new RuntimeException("Not implemented yet.");
 	}
 
 	@Override
-	public void synchronizeMetadata(CloudFileInfo file) {
+	public List<CloudFile> getAllFilesWithContent() {
+		throw new RuntimeException("Not implemented yet.");
+	}
+
+	@Override
+	public void pushMetadata(CloudFileInfo fileInfo) {
 		throw new RuntimeException("Not implemented yet.");
 	}
 
