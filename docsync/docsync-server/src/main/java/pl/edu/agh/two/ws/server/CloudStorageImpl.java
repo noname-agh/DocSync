@@ -10,12 +10,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import java.util.HashMap;
+import javax.xml.ws.Endpoint;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
+	
+	private static final String SERVICE_URL = "http://localhost:8080/CloudStorage";
+	private EntityManagerFactory emf = Persistence.createEntityManagerFactory("serverUnit");
+	private EntityManager em = emf.createEntityManager();
 
 	@Override
 	public void addFile(CloudFile file) {
@@ -29,7 +33,7 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public List<CloudFileInfo> getFiles() {
-		throw new RuntimeException("Not implemented yet.");
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override
@@ -39,14 +43,12 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public List<CloudFile> getAllFilesWithContent() {
-		throw new RuntimeException("Not implemented yet.");
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override
 	public void pushMetadata(CloudFileInfo fileInfo) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("serverUnit");
-		EntityManager em = emf.createEntityManager();
-		
+			
 				
 		CloudMetadata md = fileInfo.getMetadata();	
 	
@@ -56,6 +58,10 @@ public class CloudStorageImpl implements CloudStorage {
 		
 		em.close();
 		emf.close();
+	}
+	
+	public static void main(String[] args) {
+		Endpoint.publish(SERVICE_URL, new CloudStorageImpl());
 	}
 
 }
