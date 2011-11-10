@@ -1,5 +1,8 @@
 package pl.edu.agh.two.ws.server;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.xml.ws.Endpoint;
 
+import javax.xml.ws.WebServiceException;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
@@ -20,22 +24,44 @@ import pl.edu.agh.two.ws.CloudStorage;
 public class CloudStorageImpl implements CloudStorage {
 
 	private static final String SERVICE_URL = "http://localhost:8080/";
-	private EntityManagerFactory emf = Persistence
-			.createEntityManagerFactory("serverUnit");
+	private EntityManagerFactory emf; 
 
+	public CloudStorageImpl(EntityManagerFactory emf) {
+		this.emf = emf;
+	}
+	
 	@Override
-	public void addFile(CloudFile file) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(file);
-		em.getTransaction().commit();
-		em.close();
+	public CloudFileInfo addFile(CloudFile file) {
+		try {
+			/* Make sure hash is correct */
+			file.setHash(computeHash(file.getContent()));
+			
+			CloudMetadata metadata = file.getMetadata();
+			if (metadata == null) {
+				metadata = new CloudMetadata();
+				metadata.setVersion(0);
+				file.setMetadata(metadata);
+			}
+			
+			EntityManager em = emf.createEntityManager();
+			em.getTransaction().begin();
+			em.persist(file.getMetadata());
+			em.persist(file);
+			em.getTransaction().commit();
+			em.close();
+
+			return file;
+			
+		} catch (NoSuchAlgorithmException ex) {
+			throw new WebServiceException("Error when creating file hash", ex);
+		}
 	}
 
 	@Override
 	public void removeFile(CloudFileInfo file) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
+		file = em.merge(file);
 		em.remove(file);
 		em.getTransaction().commit();
 		em.close();
@@ -48,7 +74,12 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public CloudFile getFileWithContent(CloudFileInfo fileInfo) {
-		throw new RuntimeException("Not implemented yet.");
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		CloudFile file = em.find(CloudFile.class, fileInfo.getHash());
+		em.getTransaction().commit();
+		em.close();
+		return file;
 	}
 
 	@Override
@@ -74,9 +105,15 @@ public class CloudStorageImpl implements CloudStorage {
 		em.getTransaction().commit();
 
 	}
+	
+	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		return Arrays.toString(md.digest(content));
+	}
 
 	public static void main(String[] args) {
-		Endpoint.publish(SERVICE_URL, new CloudStorageImpl());
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("serverUnit");
+		Endpoint.publish(SERVICE_URL, new CloudStorageImpl(emf));
 	}
 
 }

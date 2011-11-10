@@ -6,7 +6,14 @@ import java.util.List;
 @WebService
 public interface CloudStorage {
 
-	void addFile(CloudFile file);
+	/**
+	 * Add new file to cloud storage. File hash is not used, and may be null.
+	 * 
+	 * 
+	 * @param file file to add
+	 * @return file info with of added file
+	 */
+	CloudFileInfo addFile(CloudFile file);
 
 	void removeFile(CloudFileInfo file);
 
