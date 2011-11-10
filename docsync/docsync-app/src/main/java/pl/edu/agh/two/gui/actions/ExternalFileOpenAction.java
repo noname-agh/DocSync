@@ -2,14 +2,13 @@ package pl.edu.agh.two.gui.actions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.edu.agh.two.file.DefaultDocSyncFile;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.PDFDocSyncFile;
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -39,10 +38,14 @@ public class ExternalFileOpenAction implements ActionListener {
 			String ext = fileName.substring(fileName.lastIndexOf('.'));
 			if (ext.toLowerCase().equals(".pdf")) {
 				DocSyncFile f = new PDFDocSyncFile(file.getAbsolutePath());
-				if(!fileList.contains(f))
-				{
+				if (!fileList.contains(f)) {
 					fileList.add(f);
-					DocSyncGUI.getFrame();
+					DocSyncGUI.refreshFileList();
+				}
+			} else {
+				DocSyncFile f = new DefaultDocSyncFile(file.getAbsolutePath());
+				if (!fileList.contains(f)) {
+					fileList.add(f);
 					DocSyncGUI.refreshFileList();
 				}
 			}
