@@ -20,6 +20,8 @@ public interface IFileList {
 	 */
 	public void open(DocSyncFile file);
 
+	public void open(int row);
+
 	/**
 	 * Usunięci pliku z listy
 	 *
@@ -33,6 +35,7 @@ public interface IFileList {
 	 * @param file
 	 */
 	public void add(DocSyncFile file);
+
 	/**
 	 * Sprawdzenie czy plik jest juz na liscie
 	 *

@@ -8,8 +8,9 @@ import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * TODO: add comments.
@@ -48,7 +49,16 @@ public class DocSyncGUI extends JFrame {
 
 		getFrame().setLayout(new BorderLayout());
 
-		fileList = new JTable(new FileTableModel());
+		final FileTableModel tableModel = new FileTableModel();
+		fileList = new JTable(tableModel);
+		fileList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2) {
+					tableModel.open(fileList.getSelectedRow());
+				}
+			}
+		});
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(fileList);
@@ -82,8 +92,8 @@ public class DocSyncGUI extends JFrame {
 	public IFileList getFileList() {
 		return (IFileList) fileList.getModel();
 	}
-	
+
 	public static void refreshFileList() {
-	    	((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
-	    }
+		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
+	}
 }

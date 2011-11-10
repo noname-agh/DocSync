@@ -29,7 +29,6 @@ public class PDFViewer extends JFrame {
 		super();
 		this.file = file;
 		init();
-		this.setVisible(true);
 	}
 
 	private void init() {
@@ -53,10 +52,11 @@ public class PDFViewer extends JFrame {
 		try {
 			this.setTitle("PDFViewer [::] " + filePath);
 			controller.openDocument(filePath);
-			controller.goToDeltaPage(((PDFMetadata) file.getMeta()).getPageNo()); // TODO: Uladnic
+			controller.goToDeltaPage(((PDFMetadata) file.getMeta()).getPageNo() - 1); // TODO: Uladnic
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 		}
+		this.setVisible(true);
 	}
 
 }
