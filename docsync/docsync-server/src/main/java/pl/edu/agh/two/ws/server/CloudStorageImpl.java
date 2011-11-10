@@ -7,6 +7,7 @@ import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
 import pl.edu.agh.two.ws.CloudStorage;
+import pl.edu.agh.two.ws.RSSItem;
 
 import javax.jws.WebService;
 import javax.persistence.EntityManager;
@@ -18,10 +19,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
-	private static final Logger log = LoggerFactory.getLogger(CloudStorageImpl.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(CloudStorageImpl.class);
 
 	private EntityManagerFactory emf;
 
@@ -73,9 +74,7 @@ public class CloudStorageImpl implements CloudStorage {
 			e.printStackTrace();
 		}
 
-
 		return file;
-
 
 	}
 
@@ -109,13 +108,13 @@ public class CloudStorageImpl implements CloudStorage {
 		List fileList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			fileList = em.createQuery("from CloudFile", CloudFile.class).getResultList();
+			fileList = em.createQuery("from CloudFile", CloudFile.class)
+					.getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return fileList;
 	}
-
 
 	@Override
 	public void pushMetadata(CloudFileInfo fileInfo) {
@@ -126,8 +125,8 @@ public class CloudStorageImpl implements CloudStorage {
 		file.setMetadata(md);
 		em.getTransaction().begin();
 		em.merge(file);
-		//em.persist(md);
-		//em.persist(fileInfo);
+		// em.persist(md);
+		// em.persist(fileInfo);
 		em.getTransaction().commit();
 	}
 
@@ -140,7 +139,9 @@ public class CloudStorageImpl implements CloudStorage {
 		List<String> subscriptionsList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			subscriptionsList = em.createQuery("select c.address from RssChannel c", String.class).getResultList();
+			subscriptionsList = em.createQuery(
+					"select c.address from RssChannel c", String.class)
+					.getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -148,14 +149,35 @@ public class CloudStorageImpl implements CloudStorage {
 	}
 
 	@Override
+	public void addRSSItem(RSSItem item) {
+
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		RSSItem itemCopy = em.merge(item); 
+		em.persist(itemCopy);
+		em.getTransaction().commit();
+
+	}
+
+	@Override
+	public void removeRSSItem(RSSItem item) {
+		
+		EntityManager em = emf.createEntityManager();
+		RSSItem itemCopy = em.merge(item); 
+		em.remove(itemCopy);
+		em.getTransaction().commit();
+		em.close();
+	}
+
+	@Override
 	public void addChannel(String address) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeChannel(String address) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

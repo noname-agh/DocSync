@@ -18,7 +18,8 @@ public class RSSItem  implements Serializable {
 	@GeneratedValue
 	private Long id;
 	
-	@ManyToOne @JoinColumn(name="Id")
+	@ManyToOne 
+	@JoinColumn(name="address")
 	private String channelAddress;
 	
 	private Boolean readed;
