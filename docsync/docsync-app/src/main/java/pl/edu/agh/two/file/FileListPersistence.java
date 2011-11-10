@@ -13,8 +13,10 @@ public class FileListPersistence {
 	}
 
 	public void save(List<DocSyncFile> list) throws IOException {
+		File f = new File(storagePath);
+		
 		FileOutputStream fos;
-		fos = new FileOutputStream(storagePath);
+		fos = new FileOutputStream(f);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		oos.writeObject(new LinkedList<DocSyncFile>(list));
 		fos.close();
@@ -22,8 +24,13 @@ public class FileListPersistence {
 
 	@SuppressWarnings("unchecked")
 	public List<DocSyncFile> load() throws IOException {
+		File f = new File(storagePath);
+		
+		if(!f.exists())
+			return new LinkedList<DocSyncFile>();
+		
 		FileInputStream fis;
-		fis = new FileInputStream(storagePath);
+		fis = new FileInputStream(f);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		try {
 			List<DocSyncFile> list = (List<DocSyncFile>) ois.readObject();

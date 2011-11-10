@@ -24,7 +24,9 @@ public class FileTableModel extends AbstractTableModel implements IFileList{
 	
 	public Class getColumnClass(int col) { return columnClasses[col]; } 
 	
-		
+	public LinkedList<DocSyncFile> getDocSyncFileList() {
+		return files;
+	}
 	
 	public Object getValueAt(int row, int col) { 
 		

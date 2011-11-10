@@ -3,7 +3,7 @@ package pl.edu.agh.two.gui.pdf;
 import pl.edu.agh.two.interfaces.IMetadata;
 
 public class PDFMetadata implements IMetadata {
-
+	private static final long serialVersionUID = -6005595238003881335L;
 	private int pageNo;
 
 	public PDFMetadata() {
