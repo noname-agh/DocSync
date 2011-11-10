@@ -24,8 +24,12 @@ import pl.edu.agh.two.ws.CloudStorage;
 public class CloudStorageImpl implements CloudStorage {
 
 	private static final String SERVICE_URL = "http://localhost:8080/";
-	private EntityManagerFactory emf; 
+	private EntityManagerFactory emf;
 
+	public CloudStorageImpl() {
+		emf = Persistence.createEntityManagerFactory("serverUnit");
+	}	
+	
 	public CloudStorageImpl(EntityManagerFactory emf) {
 		this.emf = emf;
 	}
