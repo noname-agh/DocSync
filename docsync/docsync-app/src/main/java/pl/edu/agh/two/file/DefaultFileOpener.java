@@ -3,6 +3,8 @@ package pl.edu.agh.two.file;
 import java.awt.*;
 import java.io.File;
 
+import pl.edu.agh.two.interfaces.IFileOpener;
+
 public class DefaultFileOpener implements IFileOpener {
 
 	@Override

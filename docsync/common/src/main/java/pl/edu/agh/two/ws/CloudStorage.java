@@ -28,11 +28,6 @@ public interface CloudStorage {
 	 */
 	List<CloudFile> getAllFilesWithContent();
 
-	/**
-	 * Saves/updates metadata of a file in cloud storage.
-	 *
-	 * @param fileInfo file to save/update
-	 */
 	void pushMetadata(CloudFileInfo fileInfo);
 
 	//CloudMetadata pullMetadata(CloudFileInfo file);

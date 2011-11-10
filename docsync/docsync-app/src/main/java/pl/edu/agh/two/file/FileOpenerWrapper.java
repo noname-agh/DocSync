@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.edu.agh.two.interfaces.IFileOpener;
+
 public class FileOpenerWrapper implements IFileOpener {
 
 	private Map<String, IFileOpener> openers;
