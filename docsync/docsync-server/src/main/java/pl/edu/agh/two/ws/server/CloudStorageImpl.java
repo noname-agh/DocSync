@@ -1,48 +1,46 @@
 package pl.edu.agh.two.ws.server;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import pl.edu.agh.two.ws.CloudFile;
+import pl.edu.agh.two.ws.CloudFileInfo;
+import pl.edu.agh.two.ws.CloudMetadata;
+import pl.edu.agh.two.ws.CloudStorage;
 
 import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.xml.ws.Endpoint;
-
 import javax.xml.ws.WebServiceException;
-import pl.edu.agh.two.ws.CloudFile;
-import pl.edu.agh.two.ws.CloudFileInfo;
-import pl.edu.agh.two.ws.CloudMetadata;
-import pl.edu.agh.two.ws.CloudStorage;
-
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
 
-	private static final String SERVICE_URL = "http://localhost:8080/";
-	private EntityManagerFactory emf; 
+	private static final String SERVICE_URL = "http://localhost:3306/";
+	private EntityManagerFactory emf;
 
 	public CloudStorageImpl(EntityManagerFactory emf) {
 		this.emf = emf;
 	}
-	
+
 	@Override
 	public CloudFileInfo addFile(CloudFile file) {
 		try {
 			/* Make sure hash is correct */
 			file.setHash(computeHash(file.getContent()));
-			
+
 			CloudMetadata metadata = file.getMetadata();
 			if (metadata == null) {
 				metadata = new CloudMetadata();
 				metadata.setVersion(0);
 				file.setMetadata(metadata);
 			}
-			
+
 			EntityManager em = emf.createEntityManager();
 			em.getTransaction().begin();
 			em.persist(file.getMetadata());
@@ -51,7 +49,7 @@ public class CloudStorageImpl implements CloudStorage {
 			em.close();
 
 			return file;
-			
+
 		} catch (NoSuchAlgorithmException ex) {
 			throw new WebServiceException("Error when creating file hash", ex);
 		}
@@ -93,11 +91,11 @@ public class CloudStorageImpl implements CloudStorage {
 		}
 		return fileList;
 	}
-	
+
 
 	@Override
 	public void pushMetadata(CloudFileInfo fileInfo) {
-		CloudMetadata md = fileInfo.getMetadata();	
+		CloudMetadata md = fileInfo.getMetadata();
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		em.persist(md);
@@ -105,7 +103,7 @@ public class CloudStorageImpl implements CloudStorage {
 		em.getTransaction().commit();
 
 	}
-	
+
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		return Arrays.toString(md.digest(content));
