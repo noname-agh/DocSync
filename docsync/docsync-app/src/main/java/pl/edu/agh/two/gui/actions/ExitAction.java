@@ -26,15 +26,6 @@ public class ExitAction implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
-		FileTableModel model = (FileTableModel)DocSyncGUI.getFrame().getFileList();
-		
-		FileListPersistence flp = new FileListPersistence(DocSyncGUI.getStoragePath());
-		try {
-			flp.save(model.getDocSyncFileList());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		System.exit(0);
+		DocSyncGUI.saveListandExit();
 	}
 }
