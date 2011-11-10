@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -19,17 +20,30 @@ public class FileService implements IFileService {
 	public static final String wsUrl = "http://localhost:8080/CloudStorage?wsdl";
 	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
 	public static final String wsName = "CloudStorage";
+	
+	private static IFileService fileService = new FileService();
+	private static CloudStorage cloud;
+	
+	private FileService() {
+		Service service;
+		try {
+			service = Service.create(new URL(wsUrl), new QName(wsNamespace,wsName));
+			cloud = service.getPort(CloudStorage.class);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	public static IFileService getFileService() {
+		return fileService;
+	}
 
 	@Override
-	public void sendFile(DocSyncFile file) throws IOException {
+	public void sendFile(DocSyncFile file) throws IOException {		
 		CloudFile cfile = new CloudFile();
 		cfile.setHash(file.getHash());
 		cfile.setName(getName(file.getPath()));
 		cfile.setContent(getBytesFromFile(new File(file.getPath())));
-
-		Service service = Service.create(new URL(wsUrl), new QName(wsNamespace,
-				wsName));
-		CloudStorage cloud = service.getPort(CloudStorage.class);
 		cloud.addFile(cfile);
 	}
 
