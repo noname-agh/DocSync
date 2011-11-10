@@ -50,10 +50,10 @@ public class FileService implements IFileService {
 	@Override
 	public void sendFile(DocSyncFile file) throws IOException {
 		CloudFile cfile = new CloudFile();
-		cfile.setHash(file.getHash());
 		cfile.setName(getName(file.getPath()));
 		cfile.setContent(getBytesFromFile(new File(file.getPath())));
-		cloud.addFile(cfile);
+		CloudFileInfo cInfo = cloud.addFile(cfile);
+		file.setHash(cInfo.getHash());
 	}
 
 	@Override
@@ -143,6 +143,7 @@ public class FileService implements IFileService {
 				docsyncMetadata.getMap().putAll(cloudMetadata);
 			}
 			docsyncFile.setMeta(docsyncMetadata);
+			docsyncFile.setHash(cloudFile.getHash());
 			return docsyncFile;
 		} catch (Exception e) {
 			e.printStackTrace();
