@@ -101,16 +101,17 @@ public class DocSyncGUI extends JFrame {
 		openItem.addActionListener(new ExternalFileOpenAction());
 		file.add(openItem);
 
-		file.add(new JSeparator());
+		file.add(new JSeparator());		
 
 		JMenuItem exitItem = new JMenuItem("Exit");
 		file.add(exitItem);
 		exitItem.addActionListener(new ExitAction());	
 		
-		/*
-		 * dodac wywolywanie exitaction przy zamykaniu okna przez X
-		 * frame.addWindowListener(...) przy evencie windowClosing
-		 */
+		getFrame().addWindowListener(new java.awt.event.WindowAdapter() {
+		    public void windowClosing(WindowEvent winEvt) {
+		        DocSyncGUI.saveListandExit();
+		    }
+		});
 		
 		getFrame().setJMenuBar(menuBar);
 	}
@@ -129,5 +130,17 @@ public class DocSyncGUI extends JFrame {
 
 	public static void refreshFileList() {
 		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
+	}
+	
+	public static void saveListandExit() {
+	FileTableModel model = (FileTableModel)DocSyncGUI.getFrame().getFileList();
+		
+		FileListPersistence flp = new FileListPersistence(DocSyncGUI.getStoragePath());
+		try {
+			flp.save(model.getDocSyncFileList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		System.exit(0);		
 	}
 }

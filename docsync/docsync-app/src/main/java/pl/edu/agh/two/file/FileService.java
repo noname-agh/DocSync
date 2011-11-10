@@ -23,6 +23,23 @@ public class FileService implements IFileService {
 	public static final String wsUrl = "http://localhost:8080/CloudStorage?wsdl";
 	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
 	public static final String wsName = "CloudStorage";
+	
+	private static IFileService fileService = new FileService();
+	private static CloudStorage cloud;
+	
+	private FileService() {
+		Service service;
+		try {
+			service = Service.create(new URL(wsUrl), new QName(wsNamespace,wsName));
+			cloud = service.getPort(CloudStorage.class);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	public static IFileService getFileService() {
+		return fileService;
+	}
 
 	public CloudStorage cloud = null;
 	
@@ -38,7 +55,7 @@ public class FileService implements IFileService {
 	}
 	
 	@Override
-	public void sendFile(DocSyncFile file) throws IOException {
+	public void sendFile(DocSyncFile file) throws IOException {		
 		CloudFile cfile = new CloudFile();
 		cfile.setHash(file.getHash());
 		cfile.setName(getName(file.getPath()));
