@@ -1,28 +1,49 @@
 package pl.edu.agh.two.ws.server;
 
-import pl.edu.agh.two.ws.CloudFile;
-import pl.edu.agh.two.ws.CloudFileInfo;
-import pl.edu.agh.two.ws.CloudStorage;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.jws.WebService;
-import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.xml.ws.Endpoint;
+
+import pl.edu.agh.two.ws.CloudFile;
+import pl.edu.agh.two.ws.CloudFileInfo;
+import pl.edu.agh.two.ws.CloudMetadata;
+import pl.edu.agh.two.ws.CloudStorage;
+
+
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
 
+	private static final String SERVICE_URL = "http://localhost:8080/";
+	private EntityManagerFactory emf = Persistence
+			.createEntityManagerFactory("serverUnit");
+
 	@Override
 	public void addFile(CloudFile file) {
-		throw new RuntimeException("Not implemented yet.");
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(file);
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@Override
 	public void removeFile(CloudFileInfo file) {
-		throw new RuntimeException("Not implemented yet.");
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.remove(file);
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@Override
 	public List<CloudFileInfo> getFiles() {
-		throw new RuntimeException("Not implemented yet.");
+		return new LinkedList<CloudFileInfo>(getAllFilesWithContent());
 	}
 
 	@Override
@@ -32,12 +53,30 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public List<CloudFile> getAllFilesWithContent() {
-		throw new RuntimeException("Not implemented yet.");
+		List fileList = null;
+		try {
+			EntityManager em = emf.createEntityManager();
+			fileList = em.createQuery("from CloudFile", CloudFile.class).getResultList();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return fileList;
 	}
+	
 
 	@Override
 	public void pushMetadata(CloudFileInfo fileInfo) {
-		throw new RuntimeException("Not implemented yet.");
+		CloudMetadata md = fileInfo.getMetadata();	
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(md);
+		em.persist(fileInfo);
+		em.getTransaction().commit();
+
+	}
+
+	public static void main(String[] args) {
+		Endpoint.publish(SERVICE_URL, new CloudStorageImpl());
 	}
 
 }

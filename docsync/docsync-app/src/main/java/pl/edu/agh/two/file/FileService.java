@@ -1,14 +1,24 @@
 package pl.edu.agh.two.file;
 
+import pl.edu.agh.two.DocSync;
 import pl.edu.agh.two.ws.CloudFile;
+import pl.edu.agh.two.ws.CloudStorage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+
 public class FileService implements IFileService {
+
+	public static final String wsUrl = "http://localhost:8080/CloudStorage?wsdl";
+	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
+	public static final String wsName = "CloudStorage";
 
 	@Override
 	public void sendFile(DocSyncFile file) throws IOException {
@@ -17,8 +27,10 @@ public class FileService implements IFileService {
 		cfile.setName(getName(file.getPath()));
 		cfile.setContent(getBytesFromFile(new File(file.getPath())));
 
-		//		TODO - currently no metadata props to set.
-		//		cfile.setMetadata(metadata);
+		Service service = Service.create(new URL(wsUrl), new QName(wsNamespace,
+				wsName));
+		CloudStorage cloud = service.getPort(CloudStorage.class);
+		cloud.addFile(cfile);
 	}
 
 
@@ -59,13 +71,15 @@ public class FileService implements IFileService {
 		// Read in the bytes
 		int offset = 0;
 		int numRead = 0;
-		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+		while (offset < bytes.length
+				&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 			offset += numRead;
 		}
 
 		// Ensure all the bytes have been read in
 		if (offset < bytes.length) {
-			throw new IOException("Could not completely read file " + file.getName());
+			throw new IOException("Could not completely read file "
+					+ file.getName());
 		}
 
 		// Close the input stream and return bytes
