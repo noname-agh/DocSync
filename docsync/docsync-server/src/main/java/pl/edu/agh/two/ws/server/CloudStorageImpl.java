@@ -55,9 +55,7 @@ public class CloudStorageImpl implements CloudStorage {
 		
 		em.persist(md);
 		em.persist(fileInfo);
-		
-		em.close();
-		emf.close();
+
 	}
 	
 	public static void main(String[] args) {
