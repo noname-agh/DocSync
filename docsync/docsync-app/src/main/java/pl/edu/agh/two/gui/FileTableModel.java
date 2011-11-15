@@ -94,9 +94,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void add(DocSyncFile file) {
-
 		files.add(file);
-
 	}
 
 	@Override

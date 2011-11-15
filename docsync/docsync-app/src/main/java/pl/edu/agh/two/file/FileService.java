@@ -26,7 +26,7 @@ import pl.edu.agh.two.ws.CloudStorage;
 public class FileService implements IFileService {
 	private static final Logger log = LoggerFactory.getLogger(FileService.class);
 	
-	public static final String wsUrl = "http://149.156.205.250:13733/CloudStorage?wsdl";
+	public static final String wsUrl = "http://127.0.0.1:13733/CloudStorage?wsdl";
 	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
 	public static final String wsName = "CloudStorage";
 
