@@ -7,8 +7,10 @@ import pl.edu.agh.two.ws.CloudMetadata;
 import pl.edu.agh.two.ws.CloudStorage;
 
 import javax.jws.WebService;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.WebServiceException;
@@ -33,7 +35,10 @@ public class CloudStorageImpl implements CloudStorage {
 		try {
 			/* Make sure hash is correct */
 			file.setHash(computeHash(file.getContent()));
-
+		} catch (NoSuchAlgorithmException ex) {
+			throw new WebServiceException("Error when creating file hash", ex);
+		}
+		
 			CloudMetadata metadata = file.getMetadata();
 			if (metadata == null) {
 				metadata = new CloudMetadata();
@@ -43,16 +48,31 @@ public class CloudStorageImpl implements CloudStorage {
 
 			EntityManager em = emf.createEntityManager();
 			em.getTransaction().begin();
-			em.persist(file.getMetadata());
-			em.persist(file);
-			em.getTransaction().commit();
-			em.close();
+			
+			CloudFileInfo fi = em.find(CloudFileInfo.class, file.getHash());
+			boolean updateEntity = false;
+			if (fi!=null) updateEntity = true;			
+			
+			if (updateEntity)  {
+				em.refresh(em.merge(file.getMetadata()));
+				em.refresh(em.merge(file));
+				}
+			else {
+				em.persist(file.getMetadata());
+				em.persist(file);
+			}
+				
+			try {
+				em.getTransaction().commit();
+				em.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 
 			return file;
 
-		} catch (NoSuchAlgorithmException ex) {
-			throw new WebServiceException("Error when creating file hash", ex);
-		}
+		
 	}
 
 	@Override
