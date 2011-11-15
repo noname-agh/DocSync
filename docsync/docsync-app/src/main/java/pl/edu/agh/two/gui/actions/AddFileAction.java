@@ -40,18 +40,15 @@ public class AddFileAction implements ActionListener {
 			String fileName = file.getName();
 			log.debug("Opening " + fileName);
 			String ext = fileName.substring(fileName.lastIndexOf('.'));
+			DocSyncFile f;
 			if (ext.toLowerCase().equals(".pdf")) {
-				DocSyncFile f = new PDFDocSyncFile(file.getAbsolutePath());
-				if (!fileList.contains(f)) {
-					fileList.add(f);
-					DocSyncGUI.refreshFileList();
-				}
+				f = new PDFDocSyncFile(file.getAbsolutePath());			
 			} else {
-				DocSyncFile f = new DefaultDocSyncFile(file.getAbsolutePath());
-				if (!fileList.contains(f)) {
-					fileList.add(f);
-					DocSyncGUI.refreshFileList();
-				}
+				f = new DefaultDocSyncFile(file.getAbsolutePath());
+			}
+			if (!fileList.contains(f)) {
+				fileList.addAndSend(f);
+				DocSyncGUI.refreshFileList();
 			}
 		}
 	}

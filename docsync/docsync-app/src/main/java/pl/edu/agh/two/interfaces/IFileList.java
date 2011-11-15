@@ -35,7 +35,14 @@ public interface IFileList {
 	 * @param file
 	 */
 	public void add(DocSyncFile file);
-
+	
+	/**
+	 * Dodanie pliku do listy oraz wysłanie go na serwer
+	 *
+	 * @param file
+	 */
+	public void addAndSend(DocSyncFile file);
+	
 	/**
 	 * Sprawdzenie czy plik jest juz na liscie
 	 *
@@ -50,4 +57,5 @@ public interface IFileList {
 	 * @param metadata
 	 */
 	public void updateFile(DocSyncFile file, IMetadata metadata);
+
 }

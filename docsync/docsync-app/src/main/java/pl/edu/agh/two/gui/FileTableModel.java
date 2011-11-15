@@ -1,13 +1,21 @@
 package pl.edu.agh.two.gui;
 
 import pl.edu.agh.two.file.DocSyncFile;
+import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.interfaces.IFileList;
 import pl.edu.agh.two.interfaces.IMetadata;
 
 import javax.swing.table.AbstractTableModel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class FileTableModel extends AbstractTableModel implements IFileList {
+	private static final Logger log = LoggerFactory.getLogger(FileTableModel.class);
+			
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<DocSyncFile> files;
 	protected String[] filenames;
@@ -94,6 +102,17 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	@Override
 	public void updateFile(DocSyncFile file, IMetadata metadata) {
 		file.setMeta(metadata);
+	}
+
+	@Override
+	public void addAndSend(DocSyncFile file) {
+		try {
+			FileService.getInstance().sendFile(file);
+			files.add(file);
+		} catch (IOException e) {
+			log.error("Cannot send file.");
+			e.printStackTrace();
+		}
 	}
 
 
