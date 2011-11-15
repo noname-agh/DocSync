@@ -23,6 +23,7 @@ import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileListPersistence;
 import pl.edu.agh.two.gui.actions.ExitAction;
 import pl.edu.agh.two.gui.actions.AddFileAction;
+import pl.edu.agh.two.gui.actions.GetAllFilesAction;
 import pl.edu.agh.two.interfaces.IFileList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -100,6 +101,10 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem addItem = new JMenuItem("Add");
 		addItem.addActionListener(new AddFileAction());
 		file.add(addItem);
+		
+		JMenuItem getAllFilesItem = new JMenuItem("Get all files");
+		getAllFilesItem.addActionListener(new GetAllFilesAction());
+		file.add(getAllFilesItem);
 
 		file.add(new JSeparator());		
 
