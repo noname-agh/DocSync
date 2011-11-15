@@ -1,6 +1,9 @@
 package pl.edu.agh.two.gui.actions;
 
 import org.icepdf.ri.common.SwingController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.gui.pdf.PDFMetadata;
 import pl.edu.agh.two.interfaces.IFileList;
@@ -10,6 +13,7 @@ import java.awt.event.WindowListener;
 
 
 public class SaveExitPdfAction implements WindowListener {
+	private static final Logger log = LoggerFactory.getLogger(SaveExitPdfAction.class);
 
 	private SwingController controller;
 	private DocSyncFile file;
@@ -39,7 +43,7 @@ public class SaveExitPdfAction implements WindowListener {
 		PDFMetadata meta = new PDFMetadata();
 		meta.setPageNo(pageNr);
 		fileList.updateFile(file, meta);
-		System.out.println("Saving " + file + " on page " + pageNr + " and Exiting...");
+		log.info("Saving " + file + " on page " + pageNr + " and Exiting...");
 	}
 
 	@Override
