@@ -13,6 +13,9 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.edu.agh.two.gui.pdf.PDFMetadata;
 import pl.edu.agh.two.interfaces.IFileService;
 import pl.edu.agh.two.ws.CloudFile;
@@ -21,6 +24,8 @@ import pl.edu.agh.two.ws.CloudMetadata;
 import pl.edu.agh.two.ws.CloudStorage;
 
 public class FileService implements IFileService {
+	private static final Logger log = LoggerFactory.getLogger(FileService.class);
+	
 	public static final String wsUrl = "http://149.156.205.250:13733/CloudStorage?wsdl";
 	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
 	public static final String wsName = "CloudStorage";
@@ -86,7 +91,7 @@ public class FileService implements IFileService {
 		// Before converting to an int type, check
 		// to ensure that file is not larger than Integer.MAX_VALUE.
 		if (length > Integer.MAX_VALUE) {
-			// File is too large
+			log.warn("File %s is to large (filepath: %s)", file.getName(), file.getAbsolutePath() );
 			return null;
 		}
 
