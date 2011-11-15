@@ -32,8 +32,9 @@ public class FileService implements IFileService {
 
 	private static final String storagePath = ".";
 	private static CloudStorage cloud;
-
-	public FileService() {
+	private static IFileService fileService;
+	
+	private FileService() {
 		Service service = null;
 		try {
 			service = Service.create(new URL(wsUrl), new QName(wsNamespace,
@@ -43,7 +44,14 @@ public class FileService implements IFileService {
 		}
 		cloud = service.getPort(CloudStorage.class);
 	}
-
+	
+	public static IFileService getInstance() {
+		if (fileService == null) {
+                    fileService = new FileService();
+		}
+		return fileService;
+	}
+	
 	@Override
 	public void sendFile(DocSyncFile file) throws IOException {
 		CloudFile cfile = new CloudFile();
