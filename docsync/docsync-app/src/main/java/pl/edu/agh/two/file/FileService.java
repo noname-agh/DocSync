@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
@@ -133,24 +134,22 @@ public class FileService implements IFileService {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(cloudFile.getContent());
 			fileOutputStream.close();
-
+			
+			DocSyncFile docsyncFile = null;
+			Metadata docsyncMetadata = null;
 			if (getExtension(cloudFile.getName()).equals("pdf")) {
-				PDFMetadata metadata = new PDFMetadata();
-				try {
-					metadata.setPageNo(Integer.parseInt(cloudFile.getMetadata()
-							.getMetadata().get("page")));
-				} catch (Exception e) {
-					metadata.setPageNo(1);
-				}
-
-				PDFDocSyncFile docSyncFile = new PDFDocSyncFile(
-						file.getAbsolutePath());
-				docSyncFile.setMeta(metadata);
-				return docSyncFile;
+				docsyncFile = new PDFDocSyncFile(file.getAbsolutePath());
+				docsyncMetadata = new PDFMetadata();
+			} else {
+				docsyncFile = new DefaultDocSyncFile(file.getAbsolutePath());
+				docsyncMetadata = new Metadata();
 			}
-			else {
-				throw new Exception("Unsported file extension");
+			Map<String, String> cloudMetadata = cloudFile.getMetadata().getMetadata();
+			if (cloudMetadata != null) {
+				docsyncMetadata.getMap().putAll(cloudMetadata);
 			}
+			docsyncFile.setMeta(docsyncMetadata);
+			return docsyncFile;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
