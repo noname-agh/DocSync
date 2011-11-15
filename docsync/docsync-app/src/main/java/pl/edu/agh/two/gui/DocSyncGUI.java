@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileListPersistence;
 import pl.edu.agh.two.gui.actions.ExitAction;
-import pl.edu.agh.two.gui.actions.ExternalFileOpenAction;
+import pl.edu.agh.two.gui.actions.AddFileAction;
 import pl.edu.agh.two.interfaces.IFileList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -97,9 +97,9 @@ public class DocSyncGUI extends JFrame {
 		JMenu file = new JMenu("File");
 		menuBar.add(file);
 
-		JMenuItem openItem = new JMenuItem("Open");
-		openItem.addActionListener(new ExternalFileOpenAction());
-		file.add(openItem);
+		JMenuItem addItem = new JMenuItem("Add");
+		addItem.addActionListener(new AddFileAction());
+		file.add(addItem);
 
 		file.add(new JSeparator());		
 

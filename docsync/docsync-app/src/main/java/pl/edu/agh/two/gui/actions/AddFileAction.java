@@ -9,6 +9,8 @@ import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -20,16 +22,18 @@ import java.io.File;
  *
  * @author Tomasz Zdybał
  */
-public class ExternalFileOpenAction implements ActionListener {
+public class AddFileAction implements ActionListener {
 	/**
 	 * Logger.
 	 */
-	private static final Logger log = LoggerFactory.getLogger(ExternalFileOpenAction.class);
+	private static final Logger log = LoggerFactory.getLogger(AddFileAction.class);
 
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		IFileList fileList = DocSyncGUI.getFrame().getFileList();
-		JFileChooser jc = new JFileChooser("Open file");
+		JFileChooser jc = new JFileChooser("Add file");
+		jc.setApproveButtonText("Add");
+		jc.setFileFilter( new FileNameExtensionFilter("PDF Files", "pdf"));
 		int ret = jc.showOpenDialog(DocSyncGUI.getFrame());
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			final File file = jc.getSelectedFile();
