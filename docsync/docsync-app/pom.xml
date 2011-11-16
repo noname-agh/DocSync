@@ -15,12 +15,47 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
+	<build>
+		<filters>
+			<filter>./config/build-default.properties</filter>
+			<filter>./config/build-${env}.properties</filter>
+		</filters>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+
+	<!-- default environment -->
+	<properties>
+		<env>default</env>
+	</properties>
+
+	<!-- profiles -->
+	<profiles>
+		<profile>
+			<id>devel</id>
+			<properties>
+				<env>devel</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<properties>
+				<env>release</env>
+			</properties>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			<groupId>pl.edu.agh.two</groupId>
 			<artifactId>common</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		 <type>jar</type>
+			<type>jar</type>
 		</dependency>
 
 		<dependency>

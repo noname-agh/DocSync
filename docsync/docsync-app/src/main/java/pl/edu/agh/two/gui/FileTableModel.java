@@ -1,25 +1,21 @@
 package pl.edu.agh.two.gui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.interfaces.IFileList;
-import pl.edu.agh.two.interfaces.IFileService;
 import pl.edu.agh.two.interfaces.IMetadata;
 
 import javax.swing.table.AbstractTableModel;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.LinkedList;
 
 public class FileTableModel extends AbstractTableModel implements IFileList {
 	private static final Logger log = LoggerFactory.getLogger(FileTableModel.class);
-			
+
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<DocSyncFile> files;
-	protected String[] filenames;
 	protected String[] columnNames = new String[]{"path"};
 	protected Class[] columnClasses = new Class[]{String.class};
 
@@ -30,7 +26,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	public LinkedList<DocSyncFile> getDocSyncFileList() {
 		return files;
 	}
-	
+
 	public int getColumnCount() {
 		return 1;
 	}
@@ -63,8 +59,11 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public boolean contains(DocSyncFile newfile) {
-		for (DocSyncFile file:files) 
-			if (file.getHash().equals(newfile.getHash())) return true;
+		for (DocSyncFile file : files) {
+			if (file.getHash().equals(newfile.getHash())) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -97,7 +96,9 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void add(DocSyncFile file) {
-		if (!contains(file)) files.add(file);
+		if (!contains(file)) {
+			files.add(file);
+		}
 	}
 
 	@Override
@@ -107,7 +108,9 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void addAndSend(DocSyncFile file) {
-		if (contains(file)) return;
+		if (contains(file)) {
+			return;
+		}
 		try {
 			FileService.getInstance().sendFile(file);
 			files.add(file);

@@ -1,58 +1,52 @@
 package pl.edu.agh.two.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
-
-import java.util.Map;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.edu.agh.two.gui.pdf.PDFMetadata;
 import pl.edu.agh.two.interfaces.IFileService;
+import pl.edu.agh.two.utils.ConfigReader;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
 import pl.edu.agh.two.ws.CloudStorage;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class FileService implements IFileService {
 	private static final Logger log = LoggerFactory.getLogger(FileService.class);
-	
-	public static final String wsUrl = "http://127.0.0.1:13733/CloudStorage?wsdl";
-	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
-	public static final String wsName = "CloudStorage";
+
+	public static final String wsUrl = ConfigReader.getInstance().getProperty("ws.url");
+	public static final String wsNamespace = ConfigReader.getInstance().getProperty("ws.ns");
+	public static final String wsName = ConfigReader.getInstance().getProperty("ws.name");
 
 	public static final String storagePath = ".";
 	private static CloudStorage cloud;
 	private static IFileService fileService;
-	
+
 	private FileService() {
 		Service service = null;
 		try {
-			service = Service.create(new URL(wsUrl), new QName(wsNamespace,
-					wsName));
+			service = Service.create(new URL(wsUrl), new QName(wsNamespace, wsName));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		cloud = service.getPort(CloudStorage.class);
 	}
-	
+
 	public static IFileService getInstance() {
 		if (fileService == null) {
-                    fileService = new FileService();
+			fileService = new FileService();
 		}
 		return fileService;
 	}
-	
+
 	@Override
 	public void sendFile(DocSyncFile file) throws IOException {
 		CloudFile cfile = new CloudFile();
@@ -100,7 +94,7 @@ public class FileService implements IFileService {
 		// Before converting to an int type, check
 		// to ensure that file is not larger than Integer.MAX_VALUE.
 		if (length > Integer.MAX_VALUE) {
-			log.warn("File %s is to large (filepath: %s)", file.getName(), file.getAbsolutePath() );
+			log.warn("File %s is to large (filepath: %s)", file.getName(), file.getAbsolutePath());
 			return null;
 		}
 
@@ -110,15 +104,13 @@ public class FileService implements IFileService {
 		// Read in the bytes
 		int offset = 0;
 		int numRead = 0;
-		while (offset < bytes.length
-				&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+		while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 			offset += numRead;
 		}
 
 		// Ensure all the bytes have been read in
 		if (offset < bytes.length) {
-			throw new IOException("Could not completely read file "
-					+ file.getName());
+			throw new IOException("Could not completely read file " + file.getName());
 		}
 
 		// Close the input stream and return bytes
@@ -128,13 +120,12 @@ public class FileService implements IFileService {
 
 	private DocSyncFile createDocSyncFileFromCloudFile(CloudFile cloudFile) {
 
-		File file = new File(storagePath + System.getProperty("file.separator")
-				+ cloudFile.getName());
+		File file = new File(storagePath + System.getProperty("file.separator") + cloudFile.getName());
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(cloudFile.getContent());
 			fileOutputStream.close();
-			
+
 			DocSyncFile docsyncFile = null;
 			Metadata docsyncMetadata = null;
 			if (getExtension(cloudFile.getName()).equals("pdf")) {
