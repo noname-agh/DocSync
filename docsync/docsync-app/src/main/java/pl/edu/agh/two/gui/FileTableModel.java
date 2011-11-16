@@ -3,6 +3,7 @@ package pl.edu.agh.two.gui;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.interfaces.IFileList;
+import pl.edu.agh.two.interfaces.IFileService;
 import pl.edu.agh.two.interfaces.IMetadata;
 
 import javax.swing.table.AbstractTableModel;
@@ -61,8 +62,10 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	}
 
 	@Override
-	public boolean contains(DocSyncFile file) {
-		return files.contains(file);
+	public boolean contains(DocSyncFile newfile) {
+		for (DocSyncFile file:files) 
+			if (file.getHash().equals(newfile.getHash())) return true;
+		return false;
 	}
 
 	@Override
@@ -94,7 +97,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void add(DocSyncFile file) {
-		files.add(file);
+		if (!contains(file)) files.add(file);
 	}
 
 	@Override
@@ -104,6 +107,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void addAndSend(DocSyncFile file) {
+		if (contains(file)) return;
 		try {
 			FileService.getInstance().sendFile(file);
 			files.add(file);
