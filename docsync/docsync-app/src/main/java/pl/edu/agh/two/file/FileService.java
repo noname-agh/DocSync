@@ -31,7 +31,7 @@ public class FileService implements IFileService {
 	public static final String wsNamespace = "http://server.ws.two.agh.edu.pl/";
 	public static final String wsName = "CloudStorage";
 
-	private static final String storagePath = ".";
+	public static final String storagePath = ".";
 	private static CloudStorage cloud;
 	private static IFileService fileService;
 	
