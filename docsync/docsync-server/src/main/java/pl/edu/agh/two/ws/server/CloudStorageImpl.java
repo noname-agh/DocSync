@@ -26,6 +26,10 @@ public class CloudStorageImpl implements CloudStorage {
 	private static final String SERVICE_URL = "http://0.0.0.0:13733/";
 	private EntityManagerFactory emf;
 
+	public CloudStorageImpl() {
+		emf = Persistence.createEntityManagerFactory("serverUnit");
+	}	
+	
 	public CloudStorageImpl(EntityManagerFactory emf) {
 		this.emf = emf;
 	}
@@ -126,7 +130,7 @@ public class CloudStorageImpl implements CloudStorage {
 
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("MD5");
-		return new BigInteger(md.digest(content)).toString(16);
+		return new BigInteger(1, md.digest(content)).toString(16);
 	}
 
 	public static void main(String[] args) {

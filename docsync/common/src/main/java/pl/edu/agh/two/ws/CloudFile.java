@@ -4,6 +4,7 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.xml.bind.annotation.XmlMimeType;
 
 @Entity
 public class CloudFile extends CloudFileInfo {
@@ -11,6 +12,7 @@ public class CloudFile extends CloudFileInfo {
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] content;
 
+	@XmlMimeType("application/octet-stream")
 	public byte[] getContent() {
 		return content;
 	}
