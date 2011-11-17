@@ -1,5 +1,6 @@
 package pl.edu.agh.two.gui.actions;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DefaultDocSyncFile;
@@ -11,14 +12,9 @@ import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * TODO: add comments.
@@ -38,26 +34,26 @@ public class AddFileAction implements ActionListener {
 		IFileList fileList = DocSyncGUI.getFrame().getFileList();
 		JFileChooser jc = new JFileChooser("Add file");
 		jc.setApproveButtonText("Add");
-		jc.setFileFilter( new FileNameExtensionFilter("PDF Files", "pdf"));
+		jc.setFileFilter(new FileNameExtensionFilter("PDF Files", "pdf"));
 		int ret = jc.showOpenDialog(DocSyncGUI.getFrame());
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			final File file = jc.getSelectedFile();
 			String fileName = file.getName();
 			String filePath = file.getAbsolutePath();
-			
-			//copying file to storagePath			
+
+			//copying file to storagePath
 			String storagePath = FileService.storagePath;
 			String inputPath = filePath;
-			String outputPath = storagePath+System.getProperty("file.separator")+fileName;
-			log.debug("Copying " + inputPath +" to "+outputPath);
-			String copyiedFilePath = copyfile(inputPath, outputPath);
-			log.debug("New file created at "+copyiedFilePath);
-			
+			String outputPath = storagePath + System.getProperty("file.separator") + fileName;
+			log.debug("Copying " + inputPath + " to " + outputPath);
+			String copyiedFilePath = copyFile(inputPath, outputPath);
+			log.debug("New file created at " + copyiedFilePath);
+
 			log.debug("Opening " + fileName);
 			String ext = fileName.substring(fileName.lastIndexOf('.'));
 			DocSyncFile f;
 			if (ext.toLowerCase().equals(".pdf")) {
-				f = new PDFDocSyncFile(copyiedFilePath);			
+				f = new PDFDocSyncFile(copyiedFilePath);
 			} else {
 				f = new DefaultDocSyncFile(copyiedFilePath);
 			}
@@ -68,25 +64,17 @@ public class AddFileAction implements ActionListener {
 		}
 	}
 
-	private static String copyfile(String srFile, String dtFile){
-		try{
+	private static String copyFile(String srFile, String dtFile) {
+		try {
+			File dir = new File(FileService.storagePath);
+			if (!(dir.exists() && dir.isDirectory())) {
+				new File(FileService.storagePath).mkdirs();
+			}
 			File f1 = new File(srFile);
 			File f2 = new File(dtFile);
-			InputStream in = new FileInputStream(f1);
-
-			//For Overwrite the file.
-			OutputStream out = new FileOutputStream(f2);
-
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0){
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
+			FileUtils.copyFile(f1, f2);
 			return f2.getAbsolutePath();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

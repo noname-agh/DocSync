@@ -26,7 +26,7 @@ public class FileService implements IFileService {
 	public static final String wsNamespace = ConfigReader.getInstance().getProperty("ws.ns");
 	public static final String wsName = ConfigReader.getInstance().getProperty("ws.name");
 
-	public static final String storagePath = ".";
+	public static final String storagePath = ConfigReader.getInstance().getProperty("storage.path");
 	private static CloudStorage cloud;
 	private static IFileService fileService;
 
@@ -60,6 +60,10 @@ public class FileService implements IFileService {
 	public List<DocSyncFile> getAllFilesWithContent() {
 		List<CloudFile> cloudFiles = cloud.getAllFilesWithContent();
 		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
+		File dir = new File(FileService.storagePath);
+		if (!(dir.exists() && dir.isDirectory())) {
+			new File(FileService.storagePath).mkdirs();
+		}
 		for (CloudFile cloudFile : cloudFiles) {
 			list.add(createDocSyncFileFromCloudFile(cloudFile));
 		}
@@ -119,7 +123,6 @@ public class FileService implements IFileService {
 	}
 
 	private DocSyncFile createDocSyncFileFromCloudFile(CloudFile cloudFile) {
-
 		File file = new File(storagePath + System.getProperty("file.separator") + cloudFile.getName());
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
