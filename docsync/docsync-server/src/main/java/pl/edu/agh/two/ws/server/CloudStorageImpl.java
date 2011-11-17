@@ -1,5 +1,6 @@
 package pl.edu.agh.two.ws.server;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
@@ -10,9 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.xml.ws.WebServiceException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -126,7 +126,6 @@ public class CloudStorageImpl implements CloudStorage {
 	}
 
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		return new BigInteger(1, md.digest(content)).toString(16);
+		return Arrays.toString(DigestUtils.md5(content));
 	}
 }
