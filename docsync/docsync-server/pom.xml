@@ -34,7 +34,7 @@
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
 				<configuration>
-					<contextPath>/</contextPath>
+					<contextPath>/docsync</contextPath>
 				</configuration>
 			</plugin>
 		</plugins>
