@@ -27,7 +27,93 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>pl.edu.agh.two.DocSync</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>pl.edu.agh.two.DocSync</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>hack-icepdf-core</id>
+						<phase>validate</phase>
+						<configuration>
+							<file>${basedir}/libs/icepdf-core.jar</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>org.icepdf</groupId>
+							<artifactId>core</artifactId>
+							<version>4.2</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+							<createChecksum>true</createChecksum>
+							<localRepositoryPath>repo</localRepositoryPath>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>hack-icepdf-viewer</id>
+						<phase>validate</phase>
+						<configuration>
+							<file>${basedir}/libs/icepdf-viewer.jar</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>org.icepdf</groupId>
+							<artifactId>viewer</artifactId>
+							<version>4.2</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+							<createChecksum>true</createChecksum>
+							<localRepositoryPath>repo</localRepositoryPath>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+		</plugins>
 	</build>
+
 
 	<!-- default environment -->
 	<properties>
@@ -62,16 +148,12 @@
 			<groupId>org.icepdf</groupId>
 			<artifactId>core</artifactId>
 			<version>4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/icepdf-core.jar</systemPath>
 		</dependency>
 
 		<dependency>
 			<groupId>org.icepdf</groupId>
 			<artifactId>viewer</artifactId>
 			<version>4.2</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/icepdf-viewer.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -86,4 +168,12 @@
 			<version>1.4</version>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>libs</id>
+			<url>file://${basedir}/repo</url>
+		</repository>
+	</repositories>
+
 </project>
