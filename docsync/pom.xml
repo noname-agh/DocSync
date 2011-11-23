@@ -182,4 +182,16 @@
 		</plugins>
 	</reporting>
 
+	<profiles>
+		<profile>
+			<id>ci</id>
+			<distributionManagement>
+				<site>
+					<id>locahost</id>
+					<url>scp://localhost/var/www/site/</url>
+				</site>
+			</distributionManagement>
+		</profile>
+	</profiles>
+
 </project>
