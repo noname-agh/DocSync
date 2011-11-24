@@ -7,6 +7,7 @@ import pl.edu.agh.two.file.FileListPersistence;
 import pl.edu.agh.two.gui.actions.AddFileAction;
 import pl.edu.agh.two.gui.actions.ExitAction;
 import pl.edu.agh.two.gui.actions.GetAllFilesAction;
+import pl.edu.agh.two.gui.actions.RSSManagerAction;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
@@ -93,6 +94,12 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem getAllFilesItem = new JMenuItem("Get all files");
 		getAllFilesItem.addActionListener(new GetAllFilesAction());
 		file.add(getAllFilesItem);
+		
+		JMenu rssManager = new JMenu("RSS");
+		menuBar.add(rssManager);
+		JMenuItem rssManagerItem = new JMenuItem("RSS Manager");
+		rssManagerItem.addActionListener(new RSSManagerAction());
+		rssManager.add(rssManagerItem);
 
 		file.add(new JSeparator());
 
