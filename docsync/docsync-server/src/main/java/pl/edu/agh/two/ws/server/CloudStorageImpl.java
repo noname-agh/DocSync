@@ -128,4 +128,10 @@ public class CloudStorageImpl implements CloudStorage {
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
 		return Arrays.toString(DigestUtils.md5(content));
 	}
+
+	@Override
+	public List<String> getRssSubscriptionsList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

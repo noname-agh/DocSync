@@ -38,4 +38,6 @@ public interface CloudStorage {
 	void pushMetadata(CloudFileInfo fileInfo);
 
 	//CloudMetadata pullMetadata(CloudFileInfo file);
+	
+	List<String> getRssSubscriptionsList();
 }
