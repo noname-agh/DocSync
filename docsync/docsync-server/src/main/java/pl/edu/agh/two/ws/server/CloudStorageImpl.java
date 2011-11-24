@@ -74,7 +74,7 @@ public class CloudStorageImpl implements CloudStorage {
 			e.printStackTrace();
 		}
 
-		return file;
+		return file;removeRSSItem
 
 	}
 
@@ -163,6 +163,7 @@ public class CloudStorageImpl implements CloudStorage {
 	public void removeRSSItem(RSSItem item) {
 		
 		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
 		RSSItem itemCopy = em.merge(item); 
 		em.remove(itemCopy);
 		em.getTransaction().commit();
