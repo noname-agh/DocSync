@@ -74,8 +74,7 @@ public class CloudStorageImpl implements CloudStorage {
 			e.printStackTrace();
 		}
 
-		return file;removeRSSItem
-
+		return file;
 	}
 
 	@Override
