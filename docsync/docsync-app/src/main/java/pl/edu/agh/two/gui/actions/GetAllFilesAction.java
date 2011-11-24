@@ -21,10 +21,9 @@ public class GetAllFilesAction implements ActionListener {
 		List<DocSyncFile> list = fileService.getAllFilesWithContent();
 
 		IFileList fileList = DocSyncGUI.getFrame().getFileList();
+		fileList.clear();
 		for (DocSyncFile file : list) {
-			if (!fileList.contains(file)) {
-				fileList.add(file);
-			}
+			fileList.add(file);
 		}
 		DocSyncGUI.refreshFileList();
 		log.debug("All files fetched from server.");

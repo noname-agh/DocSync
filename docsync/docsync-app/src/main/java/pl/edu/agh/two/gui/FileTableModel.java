@@ -108,6 +108,12 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	}
 
 	@Override
+	public void clear() {
+		files.clear();
+
+	}
+
+	@Override
 	public void addAndSend(DocSyncFile file) {
 		if (contains(file)) {
 			return;
