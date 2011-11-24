@@ -59,5 +59,10 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>informa</groupId>
+			<artifactId>informa</artifactId>
+			<version>0.6.0</version>
+		</dependency>
 	</dependencies>
 </project>
