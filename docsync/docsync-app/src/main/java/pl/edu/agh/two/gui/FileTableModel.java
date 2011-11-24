@@ -104,6 +104,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	@Override
 	public void updateFile(DocSyncFile file, IMetadata metadata) {
 		file.setMeta(metadata);
+		FileService.getInstance().pushMetadata(file);
 	}
 
 	@Override
