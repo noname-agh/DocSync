@@ -131,8 +131,14 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public List<String> getRssSubscriptionsList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> subscriptionsList = null;
+		try {
+			EntityManager em = emf.createEntityManager();
+			subscriptionsList = em.createQuery("select c.address from RssChannel c", String.class).getResultList();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return subscriptionsList;
 	}
 
 	@Override
