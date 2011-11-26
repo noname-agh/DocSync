@@ -4,7 +4,7 @@ import pl.edu.agh.two.ws.IMetadata;
 
 public class PDFMetadata {
 
-	public static final String PAGE_KEY = "page";
+	private static final String PAGE_KEY = "page";
 
 	private PDFMetadata() {
 	}

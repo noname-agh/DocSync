@@ -6,7 +6,7 @@ import pl.edu.agh.two.ws.IMetadata;
 
 import java.io.Serializable;
 
-public abstract class DocSyncFile implements Serializable {
+public class DocSyncFile implements Serializable {
 	/**
 	 * Logger.
 	 */
@@ -23,10 +23,9 @@ public abstract class DocSyncFile implements Serializable {
 		this.hash = null;
 	}
 
-	public abstract void open();
-
-	public abstract void delete();
-
+	public void delete() {
+		// TODO
+	}
 	public String getPath() {
 		return path;
 	}

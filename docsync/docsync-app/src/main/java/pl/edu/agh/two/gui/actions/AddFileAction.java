@@ -3,7 +3,6 @@ package pl.edu.agh.two.gui.actions;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.two.file.DefaultDocSyncFile;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.gui.DocSyncGUI;
@@ -49,7 +48,7 @@ public class AddFileAction implements ActionListener {
 			log.debug("New file created at " + copyiedFilePath);
 
 			log.debug("Opening " + fileName);
-			DocSyncFile f = new DefaultDocSyncFile(copyiedFilePath);
+			DocSyncFile f = new DocSyncFile(copyiedFilePath);
 			if (!fileList.contains(f)) {
 				fileList.addAndSend(f);
 				DocSyncGUI.refreshFileList();

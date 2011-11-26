@@ -124,7 +124,7 @@ public class FileService implements IFileService {
 			fileOutputStream.write(cloudFile.getContent());
 			fileOutputStream.close();
 			
-			DocSyncFile docsyncFile = new DefaultDocSyncFile(file.getAbsolutePath());
+			DocSyncFile docsyncFile = new DocSyncFile(file.getAbsolutePath());
 			docsyncFile.setMeta(cloudFile.getMetadata());
 			docsyncFile.setHash(cloudFile.getHash());
 			return docsyncFile;
