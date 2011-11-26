@@ -80,15 +80,6 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	}
 
 	@Override
-	public void open(DocSyncFile file) {
-		file.open();
-	}
-
-	public void open(int row) {
-		open(getRow(row));
-	}
-
-	@Override
 	public void delete(DocSyncFile file) {
 		//TODO
 

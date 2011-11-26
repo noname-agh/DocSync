@@ -15,15 +15,6 @@ public interface IFileList {
 	public void getList();
 
 	/**
-	 * Otwarcie pliku z listy.
-	 *
-	 * @param file
-	 */
-	public void open(DocSyncFile file);
-
-	public void open(int row);
-
-	/**
 	 * Usunięci pliku z listy
 	 *
 	 * @param file

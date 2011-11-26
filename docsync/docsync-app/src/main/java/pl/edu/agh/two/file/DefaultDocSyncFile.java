@@ -26,7 +26,7 @@ public class DefaultDocSyncFile extends DocSyncFile {
 	public void open() {
 		DefaultFileOpener opener = new DefaultFileOpener();
 		try {
-			opener.open(new File(this.getPath()));
+			opener.open(this);
 		} catch (FileOpenException e) {
 			log.debug("Error", e);
 		}

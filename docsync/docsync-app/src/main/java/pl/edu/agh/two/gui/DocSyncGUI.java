@@ -12,10 +12,11 @@ import pl.edu.agh.two.interfaces.IFileList;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import pl.edu.agh.two.file.FileOpenerWrapper;
+import pl.edu.agh.two.file.PDFFileOpener;
+import pl.edu.agh.two.gui.actions.OpenFileAction;
 
 /**
  * TODO: add comments.
@@ -35,7 +36,7 @@ public class DocSyncGUI extends JFrame {
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
-	private static FileListPersistence fileListPersistence = new FileListPersistence(storagePath);
+	private static final FileListPersistence fileListPersistence = new FileListPersistence(storagePath);
 
 	public DocSyncGUI() throws HeadlessException {
 		super();
@@ -58,14 +59,12 @@ public class DocSyncGUI extends JFrame {
 
 		final FileTableModel tableModel = new FileTableModel();
 		fileList = new JTable(tableModel);
-		fileList.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent mouseEvent) {
-				if (mouseEvent.getClickCount() == 2) {
-					tableModel.open(fileList.getSelectedRow());
-				}
-			}
-		});
+		
+		// Open PDFs using special opener, and use default for other file types.
+		FileOpenerWrapper fileOpener = new FileOpenerWrapper();
+		fileOpener.registerOpener("pdf", new PDFFileOpener());
+		fileList.addMouseListener(new OpenFileAction(fileOpener));
+		
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(fileList);
@@ -121,7 +120,7 @@ public class DocSyncGUI extends JFrame {
 	public IFileList getFileList() {
 		return (IFileList) fileList.getModel();
 	}
-
+	
 	public static void refreshFileList() {
 		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
 	}

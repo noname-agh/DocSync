@@ -49,7 +49,6 @@ public class AddFileAction implements ActionListener {
 			log.debug("New file created at " + copyiedFilePath);
 
 			log.debug("Opening " + fileName);
-			String ext = fileName.substring(fileName.lastIndexOf('.'));
 			DocSyncFile f = new DefaultDocSyncFile(copyiedFilePath);
 			if (!fileList.contains(f)) {
 				fileList.addAndSend(f);
