@@ -12,7 +12,7 @@ public class CloudFileInfo implements Serializable {
 	@Id
 	private String hash;
 	private String name;
-	private CloudMetadata metadata;
+	private IMetadata metadata;
 	
 	public String getHash() {
 		return hash;
@@ -30,11 +30,11 @@ public class CloudFileInfo implements Serializable {
 		this.name = name;
 	}
 
-	public CloudMetadata getMetadata() {
+	public IMetadata getMetadata() {
 		return metadata;
 	}
 
-	public void setMetadata(CloudMetadata metadata) {
+	public void setMetadata(IMetadata metadata) {
 		this.metadata = metadata;
 	}
 }

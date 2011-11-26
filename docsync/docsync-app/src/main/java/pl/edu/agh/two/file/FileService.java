@@ -2,12 +2,10 @@ package pl.edu.agh.two.file;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.edu.agh.two.gui.pdf.PDFMetadata;
 import pl.edu.agh.two.interfaces.IFileService;
 import pl.edu.agh.two.utils.ConfigReader;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
-import pl.edu.agh.two.ws.CloudMetadata;
 import pl.edu.agh.two.ws.CloudStorage;
 
 import javax.xml.namespace.QName;
@@ -17,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class FileService implements IFileService {
 	private static final Logger log = LoggerFactory.getLogger(FileService.class);
@@ -73,12 +70,10 @@ public class FileService implements IFileService {
 
 	@Override
 	public void pushMetadata(DocSyncFile file) {
-		CloudMetadata cmeta = new CloudMetadata();
-		cmeta.setMetadata(file.getMeta().getMap());
 		CloudFileInfo fileInfo = new CloudFileInfo();
 		fileInfo.setHash(file.getHash());
 		fileInfo.setName(this.getName(file.getPath()));
-		fileInfo.setMetadata(cmeta);
+		fileInfo.setMetadata(file.getMeta());
 		cloud.pushMetadata(fileInfo);
 	}
 
@@ -128,28 +123,15 @@ public class FileService implements IFileService {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(cloudFile.getContent());
 			fileOutputStream.close();
-
-			DocSyncFile docsyncFile = null;
-			Metadata docsyncMetadata = null;
-			if (getExtension(cloudFile.getName()).equals("pdf")) {
-				docsyncFile = new PDFDocSyncFile(file.getAbsolutePath());
-				docsyncMetadata = new PDFMetadata();
-			} else {
-				docsyncFile = new DefaultDocSyncFile(file.getAbsolutePath());
-				docsyncMetadata = new Metadata();
-			}
-			Map<String, String> cloudMetadata = cloudFile.getMetadata().getMetadata();
-			if (cloudMetadata != null) {
-				docsyncMetadata.getMap().putAll(cloudMetadata);
-			}
-			docsyncFile.setMeta(docsyncMetadata);
+			
+			DocSyncFile docsyncFile = new DefaultDocSyncFile(file.getAbsolutePath());
+			docsyncFile.setMeta(cloudFile.getMetadata());
 			docsyncFile.setHash(cloudFile.getHash());
 			return docsyncFile;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-
 	}
 
 	private String getExtension(String fileName) {

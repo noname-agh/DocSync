@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.interfaces.IFileList;
-import pl.edu.agh.two.interfaces.IMetadata;
+import pl.edu.agh.two.ws.IMetadata;
 
 import javax.swing.table.AbstractTableModel;
 import java.io.IOException;

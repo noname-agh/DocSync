@@ -30,7 +30,7 @@ public class CloudStorageImplTest {
 		data.put("key", "value");
 		
 		CloudMetadata metadata = new  CloudMetadata();
-		metadata.setMetadata(data);
+		metadata.setMap(data);
 		
 		CloudFile file = new CloudFile();
 		file.setName("abc");

@@ -1,5 +1,6 @@
 package pl.edu.agh.two.interfaces;
 
+import pl.edu.agh.two.ws.IMetadata;
 import pl.edu.agh.two.file.DocSyncFile;
 
 public interface IFileList {

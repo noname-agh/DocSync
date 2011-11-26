@@ -1,7 +1,7 @@
 package pl.edu.agh.two.gui.pdf;
 
 import pl.edu.agh.two.file.Metadata;
-import pl.edu.agh.two.interfaces.IMetadata;
+import pl.edu.agh.two.ws.IMetadata;
 
 public class PDFMetadata extends Metadata implements IMetadata {
 	private static final long serialVersionUID = -6005595238003881335L;
@@ -9,15 +9,15 @@ public class PDFMetadata extends Metadata implements IMetadata {
 
 	public PDFMetadata() {
 		super();
-		this.addValue(PAGE, "1");
+		this.put(PAGE, "1");
 	}
 
 	public int getPageNo() {
-		return Integer.parseInt(this.getValue(PAGE));
+		return Integer.parseInt(this.get(PAGE));
 	}
 
 	public void setPageNo(int pageNo) {
-		this.addValue(PAGE, pageNo + "");
+		this.put(PAGE, pageNo + "");
 	}
 
 }

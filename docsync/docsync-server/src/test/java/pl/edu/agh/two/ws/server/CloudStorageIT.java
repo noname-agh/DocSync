@@ -50,7 +50,7 @@ public class CloudStorageIT {
 		meta.put("key", "value");
 				
 		CloudMetadata fileMeta = new CloudMetadata();
-		fileMeta.setMetadata(meta);
+		fileMeta.setMap(meta);
 		
 		CloudFile file = new CloudFile();
 		file.setName("name");
@@ -64,7 +64,7 @@ public class CloudStorageIT {
 		assertEquals(file.getContent(), retFile.getContent());
 		assertEquals(file.getName(), retFile.getName());
 		assertEquals(0, retFile.getMetadata().getVersion());
-		assertEquals("value", retFile.getMetadata().getMetadata().get("key"));
+		assertEquals("value", retFile.getMetadata().getMap().get("key"));
 	}
 	
 }

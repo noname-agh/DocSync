@@ -25,7 +25,7 @@ public class DbTest {
 		md.setVersion(123);
 		Map<String, String> metadata = new HashMap<String, String>();
 		metadata.put("aaa", "bbb");
-		md.setMetadata(metadata);
+		md.setMap(metadata);
 
 		cf.setMetadata(md);
 

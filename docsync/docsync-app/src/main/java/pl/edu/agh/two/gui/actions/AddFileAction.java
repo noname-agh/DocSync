@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DefaultDocSyncFile;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileService;
-import pl.edu.agh.two.file.PDFDocSyncFile;
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileList;
 
@@ -51,12 +50,7 @@ public class AddFileAction implements ActionListener {
 
 			log.debug("Opening " + fileName);
 			String ext = fileName.substring(fileName.lastIndexOf('.'));
-			DocSyncFile f;
-			if (ext.toLowerCase().equals(".pdf")) {
-				f = new PDFDocSyncFile(copyiedFilePath);
-			} else {
-				f = new DefaultDocSyncFile(copyiedFilePath);
-			}
+			DocSyncFile f = new DefaultDocSyncFile(copyiedFilePath);
 			if (!fileList.contains(f)) {
 				fileList.addAndSend(f);
 				DocSyncGUI.refreshFileList();

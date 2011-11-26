@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import pl.edu.agh.two.ws.IMetadata;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
@@ -43,7 +44,7 @@ public class CloudStorageImpl implements CloudStorage {
 			throw new WebServiceException("Error when creating file hash", ex);
 		}
 
-		CloudMetadata metadata = file.getMetadata();
+		IMetadata metadata = file.getMetadata();
 		if (metadata == null) {
 			metadata = new CloudMetadata();
 			metadata.setVersion(0);
@@ -118,7 +119,7 @@ public class CloudStorageImpl implements CloudStorage {
 	@Override
 	public void pushMetadata(CloudFileInfo fileInfo) {
 		log.debug("Pushing metadata for file " + fileInfo);
-		CloudMetadata md = fileInfo.getMetadata();
+		IMetadata md = fileInfo.getMetadata();
 		EntityManager em = emf.createEntityManager();
 		CloudFile file = em.find(CloudFile.class, fileInfo.getHash());
 		file.setMetadata(md);
