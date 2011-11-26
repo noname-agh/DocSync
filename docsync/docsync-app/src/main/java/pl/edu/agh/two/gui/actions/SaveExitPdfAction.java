@@ -10,6 +10,8 @@ import pl.edu.agh.two.interfaces.IFileList;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import pl.edu.agh.two.file.Metadata;
+import pl.edu.agh.two.ws.IMetadata;
 
 
 public class SaveExitPdfAction implements WindowListener {
@@ -39,10 +41,10 @@ public class SaveExitPdfAction implements WindowListener {
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		int pageNr = controller.getCurrentPageNumber() + 1;
-		PDFMetadata meta = new PDFMetadata();
-		meta.setPageNo(pageNr);
-		fileList.updateFile(file, meta);
+		int pageNr = controller.getCurrentPageNumber();
+		IMetadata metadata = new Metadata();
+		PDFMetadata.setPageNumber(metadata, pageNr);
+		fileList.updateFile(file, metadata);
 		log.info("Saving " + file + " on page " + pageNr + " and Exiting...");
 	}
 

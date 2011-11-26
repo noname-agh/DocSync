@@ -20,10 +20,12 @@ public class PDFViewer extends JFrame {
 
 	private static final Logger logger = LoggerFactory.getLogger(DocSyncGUI.class);
 	private static final long serialVersionUID = 1L;
+	public static final String PAGE_KEY = "page";
 	private SwingController controller;
 	private SwingViewBuilder factory;
 	private JPanel viewComponentPanel;
 	private DocSyncFile file;
+	
 
 	public PDFViewer(DocSyncFile file) {
 		super();
@@ -52,7 +54,7 @@ public class PDFViewer extends JFrame {
 		try {
 			this.setTitle("PDFViewer [::] " + filePath);
 			controller.openDocument(filePath);
-			controller.goToDeltaPage(((PDFMetadata) file.getMeta()).getPageNo() - 1); // TODO: Uladnic
+			controller.goToDeltaPage(PDFMetadata.getPageNumber(file.getMeta()));
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 		}

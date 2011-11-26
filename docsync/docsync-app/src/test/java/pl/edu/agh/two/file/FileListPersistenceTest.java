@@ -1,5 +1,6 @@
 package pl.edu.agh.two.file;
 
+import pl.edu.agh.two.ws.IMetadata;
 import org.testng.annotations.Test;
 import pl.edu.agh.two.gui.pdf.PDFMetadata;
 
@@ -20,10 +21,8 @@ public class FileListPersistenceTest {
 
 		FileListPersistence flp = new FileListPersistence(f.getAbsolutePath());
 
-		DocSyncFile pdf = new PDFDocSyncFile("src/main/resources/doc.pdf");
-		PDFMetadata meta = new PDFMetadata();
-		meta.setPageNo(23);
-		pdf.setMeta(meta);
+		DocSyncFile pdf = new DefaultDocSyncFile("src/main/resources/doc.pdf");
+		PDFMetadata.setPageNumber(pdf.getMeta(), 23);
 
 		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
 		list.add(pdf);
@@ -33,8 +32,8 @@ public class FileListPersistenceTest {
 		list = flp.load();
 
 		assertEquals(list.size(), 1);
-		meta = (PDFMetadata) list.get(0).getMeta();
-		assertEquals(meta.getPageNo(), 23);
+		IMetadata meta = list.get(0).getMeta();
+		assertEquals(PDFMetadata.getPageNumber(meta), 23);
 
 		f.delete();
 	}
