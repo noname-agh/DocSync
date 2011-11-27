@@ -32,9 +32,16 @@ public class FileService implements IFileService {
 		try {
 			service = Service.create(new URL(wsUrl), new QName(wsNamespace, wsName));
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			log.error("Can not create service.", e);
 		}
 		cloud = service.getPort(CloudStorage.class);
+	}
+
+	/*
+	 * TODO: change visibility - refactor this class
+	 */
+	public FileService(CloudStorage cloudStorage) {
+		cloud = cloudStorage;
 	}
 
 	public static IFileService getInstance() {
@@ -123,7 +130,7 @@ public class FileService implements IFileService {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(cloudFile.getContent());
 			fileOutputStream.close();
-			
+
 			DocSyncFile docsyncFile = new DocSyncFile(file.getAbsolutePath());
 			docsyncFile.setMeta(cloudFile.getMetadata());
 			docsyncFile.setHash(cloudFile.getHash());
