@@ -27,6 +27,7 @@ import javax.swing.ListSelectionModel;
 import org.hibernate.mapping.Collection;
 
 import pl.edu.agh.two.gui.DocSyncGUI;
+import pl.edu.agh.two.rss.RSSService;
 
 public class RSSManagerAction implements ActionListener {
 	private static final String TITLE = "DocSync - RSS Manager";
@@ -58,6 +59,8 @@ public class RSSManagerAction implements ActionListener {
 								JOptionPane.PLAIN_MESSAGE);
 				if (url.length() > 0) {
 					model.addElement(url);
+					RSSService rssService = RSSService.getInstance();
+					rssService.addChannel(url);
 				}
 			}
 		});
@@ -70,6 +73,8 @@ public class RSSManagerAction implements ActionListener {
 			public void actionPerformed(ActionEvent arg0) {
 				int selected = list.getSelectedIndex();
 				if (selected != -1) {
+					RSSService rssService = RSSService.getInstance();
+					rssService.removeChannel((String)(list.getSelectedValue()));
 					model.remove(selected);
 				}
 			}
@@ -79,7 +84,6 @@ public class RSSManagerAction implements ActionListener {
 		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
-				saveData();
 				dialog.dispose();
 			}
 		});
@@ -92,17 +96,10 @@ public class RSSManagerAction implements ActionListener {
 	}
 
 	private void initData() {
-		// TODO - get data from webservice and add to model
-		model.addElement("rss 1");
-		model.addElement("rss 2");
-	}
-	
-	private void saveData() {
-		// TODO - save data from model (webservice)
-		for (Object rss: Collections.list(model.elements())) {
-			System.out.println("Saving " + rss.toString());
-		}
+		RSSService rssService = RSSService.getInstance();
 		
+		List<String> list = rssService.getRssChannelList();
+		for (String channel : list) model.addElement(channel);
 	}
 
 }
