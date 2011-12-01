@@ -54,4 +54,9 @@ public class RSSService {
 	public List<RSSItem> refreshAndGetRssItems() {
 		return cloud.refreshAndGetRssItems();
 	}
+	
+	public void updateRSSItem(RSSItem rssItem) {
+		cloud.updateRSSItem(rssItem);
+	}
+	
 }
