@@ -4,17 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileListPersistence;
-
-import pl.edu.agh.two.gui.actions.AddFileAction;
-import pl.edu.agh.two.gui.actions.ExitAction;
-import pl.edu.agh.two.gui.actions.GetAllFilesAction;
-import pl.edu.agh.two.gui.actions.RSSManagerAction;
-import pl.edu.agh.two.gui.actions.RSSRefreshAction;
-
 import pl.edu.agh.two.file.FileOpenerWrapper;
 import pl.edu.agh.two.file.PDFFileOpener;
 import pl.edu.agh.two.gui.actions.*;
-
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
@@ -55,16 +47,15 @@ public class DocSyncGUI extends JFrame {
 	}
 
 	private static void initGUI() {
+		fileList = new JTable(new FileTableModel());
+		rssList = new JTable(new RSSTableModel());
 		getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getFrame().setTitle(TITLE);
 		getFrame().setSize(FRAME_DIMENSION);
 
 		initMenu();
-
 		getFrame().setLayout(new BorderLayout());
 
-		fileList = new JTable(new FileTableModel());
-		rssList = new JTable(new RSSTableModel());
 
 		JTabbedPane tabs = new JTabbedPane();
 
@@ -110,7 +101,7 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem rssManagerItem = new JMenuItem("RSS Manager");
 		rssManagerItem.addActionListener(new RSSManagerAction());
 		rssManager.add(rssManagerItem);
-		
+
 		JMenuItem rssRefreshItem = new JMenuItem("Refresh messages");
 		rssRefreshItem.addActionListener(new RSSRefreshAction(rssList.getModel()));
 		rssManager.add(rssRefreshItem);
