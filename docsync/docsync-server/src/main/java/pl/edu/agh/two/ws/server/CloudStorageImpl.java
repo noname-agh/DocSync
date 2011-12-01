@@ -206,10 +206,7 @@ public class CloudStorageImpl implements CloudStorage {
 	@Override
 	public List<RSSItem> refreshAndGetRssItems() {
 		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
 		List<RSSItem> list = em.createNamedQuery("getUnreadedRSSItems").getResultList();
-		em.getTransaction().commit();
-		em.close();
 		return list;
 	}
 }
