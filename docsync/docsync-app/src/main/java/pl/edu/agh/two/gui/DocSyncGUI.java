@@ -146,6 +146,10 @@ public class DocSyncGUI extends JFrame {
 		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
 	}
 
+	public static void refreshRSSList() {
+		((AbstractTableModel) rssList.getModel()).fireTableDataChanged();
+	}
+
 	public static void saveListAndExit() {
 		FileTableModel model = (FileTableModel) getFrame().getFileList();
 
