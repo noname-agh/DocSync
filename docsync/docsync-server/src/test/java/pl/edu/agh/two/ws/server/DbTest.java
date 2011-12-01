@@ -13,7 +13,7 @@ import java.util.Map;
 public class DbTest {
 	@Test
 	public void TestEntityManager() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("serverUnit");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
 		EntityManager em = emf.createEntityManager();
 
 		CloudFile cf = new CloudFile();
