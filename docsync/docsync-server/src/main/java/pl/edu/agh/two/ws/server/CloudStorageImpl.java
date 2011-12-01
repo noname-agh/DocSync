@@ -1,24 +1,37 @@
 package pl.edu.agh.two.ws.server;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.edu.agh.two.ws.CloudFile;
-import pl.edu.agh.two.ws.CloudFileInfo;
-import pl.edu.agh.two.ws.CloudMetadata;
-import pl.edu.agh.two.ws.CloudStorage;
-import pl.edu.agh.two.ws.RSSItem;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.xml.ws.WebServiceException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.ScheduleBuilder;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pl.edu.agh.two.quartzjob.JobRunner;
+import pl.edu.agh.two.quartzjob.RSSUpdateJob;
+import pl.edu.agh.two.ws.CloudFile;
+import pl.edu.agh.two.ws.CloudFileInfo;
+import pl.edu.agh.two.ws.CloudMetadata;
+import pl.edu.agh.two.ws.CloudStorage;
 import pl.edu.agh.two.ws.IMetadata;
+import pl.edu.agh.two.ws.RSSItem;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
@@ -27,12 +40,13 @@ public class CloudStorageImpl implements CloudStorage {
 
 	private EntityManagerFactory emf;
 
-	public CloudStorageImpl() {
-		emf = Persistence.createEntityManagerFactory("serverUnit");
+	public CloudStorageImpl() {		
+		this(Persistence.createEntityManagerFactory("serverUnit"));
 	}
 
 	public CloudStorageImpl(EntityManagerFactory emf) {
 		this.emf = emf;
+		JobRunner.runJob();
 	}
 
 	@Override
