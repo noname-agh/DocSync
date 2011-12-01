@@ -1,5 +1,7 @@
 package pl.edu.agh.two.interfaces;
 
+import java.util.List;
+
 import pl.edu.agh.two.ws.RSSItem;
 
 /**
@@ -22,6 +24,8 @@ public interface IRSSList {
 	 * @return RSSItem
 	 */
 	RSSItem getItem(int i);
+	
+	void addItems(List<RSSItem> items);
 
 
 }

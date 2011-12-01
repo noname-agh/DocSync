@@ -53,4 +53,10 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 		// TODO: implementation
 		return null;
 	}
+
+	@Override
+	public void addItems(List<RSSItem> items) {
+		this.items.addAll(items);
+		
+	}
 }
