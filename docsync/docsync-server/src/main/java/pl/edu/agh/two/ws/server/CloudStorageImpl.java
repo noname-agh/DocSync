@@ -193,4 +193,10 @@ public class CloudStorageImpl implements CloudStorage {
 		
 		em.getTransaction().commit();
 	}
+
+	@Override
+	public List<RSSItem> refreshAndGetRssItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

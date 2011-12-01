@@ -8,6 +8,7 @@ import pl.edu.agh.two.gui.actions.AddFileAction;
 import pl.edu.agh.two.gui.actions.ExitAction;
 import pl.edu.agh.two.gui.actions.GetAllFilesAction;
 import pl.edu.agh.two.gui.actions.RSSManagerAction;
+import pl.edu.agh.two.gui.actions.RSSRefreshAction;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
@@ -100,6 +101,10 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem rssManagerItem = new JMenuItem("RSS Manager");
 		rssManagerItem.addActionListener(new RSSManagerAction());
 		rssManager.add(rssManagerItem);
+		
+		JMenuItem rssRefreshItem = new JMenuItem("Refresh messages");
+		rssRefreshItem.addActionListener(new RSSRefreshAction());
+		rssManager.add(rssRefreshItem);
 
 		file.add(new JSeparator());
 

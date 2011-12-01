@@ -80,6 +80,7 @@ public class RSSManagerAction implements ActionListener {
 			}
 		});
 		buttonsPane.add(buttonRemove);
+		
 
 		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {

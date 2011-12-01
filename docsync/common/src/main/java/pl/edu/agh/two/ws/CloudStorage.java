@@ -49,4 +49,6 @@ public interface CloudStorage {
 	
 	void removeRSSItem(RSSItem item);
 	
+	List<RSSItem> refreshAndGetRssItems();
+	
 }
