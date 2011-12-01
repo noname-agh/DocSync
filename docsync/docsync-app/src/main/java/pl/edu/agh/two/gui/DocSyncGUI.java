@@ -112,7 +112,7 @@ public class DocSyncGUI extends JFrame {
 		rssManager.add(rssManagerItem);
 		
 		JMenuItem rssRefreshItem = new JMenuItem("Refresh messages");
-		rssRefreshItem.addActionListener(new RSSRefreshAction());
+		rssRefreshItem.addActionListener(new RSSRefreshAction(rssList.getModel()));
 		rssManager.add(rssRefreshItem);
 
 		file.add(new JSeparator());
