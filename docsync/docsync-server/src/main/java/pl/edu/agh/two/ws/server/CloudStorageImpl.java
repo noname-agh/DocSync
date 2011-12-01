@@ -193,4 +193,18 @@ public class CloudStorageImpl implements CloudStorage {
 		
 		em.getTransaction().commit();
 	}
+
+	@Override
+	public List<RSSItem> getRSSItems() {
+		List<RSSItem> rssItemList = null;
+		try {
+			EntityManager em = emf.createEntityManager();
+			rssItemList = em.createQuery(
+					"select r from RssItem as r where r.readed = false", RSSItem.class)
+					.getResultList();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return rssItemList;
+	}
 }

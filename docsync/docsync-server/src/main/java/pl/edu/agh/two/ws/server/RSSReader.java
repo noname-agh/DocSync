@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
+import pl.edu.agh.two.ws.CloudStorage;
 import pl.edu.agh.two.ws.RSSItem;
 
 import de.nava.informa.core.ChannelIF;
@@ -31,7 +32,9 @@ public class RSSReader {
 				dbItem.setDescription(item.getDescription());
 				dbItem.setGuid(item.getGuid().toString());			
 				dbItem.setLink(item.getLink().toString());
-				dbItem.setReaded(false);
+				CloudStorage cs = new CloudStorageImpl();
+				cs.addChannel(url.toString());
+				cs.addRSSItem(dbItem);
 				
 				
 				/*

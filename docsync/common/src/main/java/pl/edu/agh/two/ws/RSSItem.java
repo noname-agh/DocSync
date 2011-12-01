@@ -18,12 +18,10 @@ public class RSSItem  implements Serializable {
 	@GeneratedValue
 	private Long id;
 	
-	@ManyToOne 
-	@JoinColumn(name="address")
+
 	private String channelAddress;
-	
-	private Boolean readed;
 	private String link;
+	private Boolean readed;
 	private String description;
 	private String guid;
 	private Date date;
