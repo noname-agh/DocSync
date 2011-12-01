@@ -55,9 +55,8 @@ public class DocSyncGUI extends JFrame {
 
 		getFrame().setLayout(new BorderLayout());
 
-		final FileTableModel tableModel = new FileTableModel();
-		fileList = new JTable(tableModel);
-		rssList = new JTable();
+		fileList = new JTable(new FileTableModel());
+		rssList = new JTable(new RSSTableModel());
 
 		JTabbedPane tabs = new JTabbedPane();
 
