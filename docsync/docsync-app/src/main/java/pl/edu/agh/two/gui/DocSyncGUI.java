@@ -4,10 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileListPersistence;
-import pl.edu.agh.two.gui.actions.AddFileAction;
-import pl.edu.agh.two.gui.actions.ExitAction;
-import pl.edu.agh.two.gui.actions.GetAllFilesAction;
-import pl.edu.agh.two.gui.actions.RSSManagerAction;
+import pl.edu.agh.two.file.FileOpenerWrapper;
+import pl.edu.agh.two.file.PDFFileOpener;
+import pl.edu.agh.two.gui.actions.*;
 import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
@@ -15,9 +14,6 @@ import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import pl.edu.agh.two.file.FileOpenerWrapper;
-import pl.edu.agh.two.file.PDFFileOpener;
-import pl.edu.agh.two.gui.actions.OpenFileAction;
 
 /**
  * TODO: add comments.
@@ -34,6 +30,7 @@ public class DocSyncGUI extends JFrame {
 
 	private static DocSyncGUI frame;
 	private static JTable fileList;
+	private static JTable rssList;
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
@@ -60,16 +57,22 @@ public class DocSyncGUI extends JFrame {
 
 		final FileTableModel tableModel = new FileTableModel();
 		fileList = new JTable(tableModel);
-		
+		rssList = new JTable();
+
+		JTabbedPane tabs = new JTabbedPane();
+
 		// Open PDFs using special opener, and use default for other file types.
 		FileOpenerWrapper fileOpener = new FileOpenerWrapper();
 		fileOpener.registerOpener("pdf", new PDFFileOpener());
 		fileList.addMouseListener(new OpenFileAction(fileOpener));
-		
+
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
-		JScrollPane scrollPane = new JScrollPane(fileList);
-		getFrame().add(scrollPane);
+		JScrollPane filesScrollPane = new JScrollPane(fileList);
+		JScrollPane rssScrollPane = new JScrollPane(rssList);
+		getFrame().add(tabs);
+		tabs.add("Files", filesScrollPane);
+		tabs.add("RSS", rssScrollPane);
 
 		try {
 			for (DocSyncFile dcf : fileListPersistence.load()) {
@@ -94,7 +97,7 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem getAllFilesItem = new JMenuItem("Get all files");
 		getAllFilesItem.addActionListener(new GetAllFilesAction());
 		file.add(getAllFilesItem);
-		
+
 		JMenu rssManager = new JMenu("RSS");
 		menuBar.add(rssManager);
 		JMenuItem rssManagerItem = new JMenuItem("RSS Manager");
@@ -127,13 +130,13 @@ public class DocSyncGUI extends JFrame {
 	public IFileList getFileList() {
 		return (IFileList) fileList.getModel();
 	}
-	
+
 	public static void refreshFileList() {
 		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
 	}
 
 	public static void saveListAndExit() {
-		FileTableModel model = (FileTableModel) DocSyncGUI.getFrame().getFileList();
+		FileTableModel model = (FileTableModel) getFrame().getFileList();
 
 		FileListPersistence flp = new FileListPersistence(DocSyncGUI.getStoragePath());
 		try {
