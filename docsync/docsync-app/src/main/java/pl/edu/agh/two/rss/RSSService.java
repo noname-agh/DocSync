@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.utils.ConfigReader;
 import pl.edu.agh.two.ws.CloudStorage;
+import pl.edu.agh.two.ws.RSSItem;
 
 
 public class RSSService {
@@ -48,5 +49,9 @@ public class RSSService {
 	
 	public List<String> getRssChannelList() {
 		return cloud.getRssChannelList();
+	}
+	
+	public List<RSSItem> refreshAndGetRssItems() {
+		return cloud.refreshAndGetRssItems();
 	}
 }

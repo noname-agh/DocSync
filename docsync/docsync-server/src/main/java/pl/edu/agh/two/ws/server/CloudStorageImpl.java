@@ -150,21 +150,27 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public void addRSSItem(RSSItem item) {
-
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		RSSItem itemCopy = em.merge(item); 
-		em.persist(itemCopy);
+		em.persist(item);
 		em.getTransaction().commit();
-
+		em.close();
+	}
+	
+	@Override
+	public void updateRSSItem(RSSItem item) {
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		em.merge(item);
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@Override
 	public void removeRSSItem(RSSItem item) {
-		
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		RSSItem itemCopy = em.merge(item); 
+		RSSItem itemCopy = em.find(RSSItem.class, item.getId()); 
 		em.remove(itemCopy);
 		em.getTransaction().commit();
 		em.close();
@@ -206,5 +212,10 @@ public class CloudStorageImpl implements CloudStorage {
 			ex.printStackTrace();
 		}
 		return rssItemList;
+	}
+	
+	public List<RSSItem> refreshAndGetRssItems() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

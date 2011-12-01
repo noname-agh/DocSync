@@ -1,12 +1,12 @@
 package pl.edu.agh.two.ws.server;
 
+
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
 import pl.edu.agh.two.ws.CloudStorage;
 import pl.edu.agh.two.ws.RSSItem;
-
 import de.nava.informa.core.ChannelIF;
 import de.nava.informa.core.ItemIF;
 import de.nava.informa.impl.basic.ChannelBuilder;
@@ -23,20 +23,24 @@ public class RSSReader {
 			System.out.println("Description: " + channel.getDescription());
 			System.out.println("PubDate: " + channel.getPubDate());
 			Collection items = channel.getItems();
-			for (Iterator i = items.iterator(); i.hasNext();) {
+			for (Iterator i = items.iterator(); i.hasNext(); ) {
 				ItemIF item = (ItemIF) i.next();
-				
+
 				RSSItem dbItem = new RSSItem();
+				dbItem.setTitle(item.getTitle());
 				dbItem.setChannelAddress(url.toString());
 				dbItem.setDate(item.getDate());
 				dbItem.setDescription(item.getDescription());
-				dbItem.setGuid(item.getGuid().toString());			
+				dbItem.setGuid(item.getGuid().toString());
 				dbItem.setLink(item.getLink().toString());
+
+				dbItem.setReaded(false);
+				
 				CloudStorage cs = new CloudStorageImpl();
 				cs.addChannel(url.toString());
 				cs.addRSSItem(dbItem);
-				
-				
+
+
 				/*
 				System.out.println(item.getTitle());
 				System.out.println("\t" + item.getDescription());
