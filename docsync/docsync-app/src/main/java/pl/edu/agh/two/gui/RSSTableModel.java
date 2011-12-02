@@ -7,6 +7,8 @@ import pl.edu.agh.two.ws.RSSItem;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -84,7 +86,10 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 		// get
 		// sort
+		sortItems(items);
+
 		// refresh
+		DocSyncGUI.refreshRSSList();
 	}
 
 	@Override
@@ -94,7 +99,22 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	@Override
 	public void addItems(List<RSSItem> items) {
-		this.items.addAll(items);
-		
+		items.addAll(items);
+		sortItems(items);
+	}
+
+	private void sortItems(List<RSSItem> items) {
+		Collections.sort(items, new RSSItemComparator());
+	}
+
+	private static class RSSItemComparator implements Comparator<RSSItem> {
+		@Override
+		public int compare(RSSItem rssItem, RSSItem rssItem1) {
+			if (rssItem.getDate() != null) {
+				return rssItem.getDate().compareTo(rssItem1.getDate());
+			} else {
+				return -1;
+			}
+		}
 	}
 }

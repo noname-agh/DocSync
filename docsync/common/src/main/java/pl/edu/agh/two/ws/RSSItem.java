@@ -1,10 +1,15 @@
 package pl.edu.agh.two.ws;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+
 @Entity
+@NamedQuery(name="getUnreadedRSSItems", query="SELECT rss FROM RSSItem rss WHERE rss.readed = FALSE")
 public class RSSItem implements Serializable {
 
 	private static final long serialVersionUID = 7908115507714381149L;
@@ -14,7 +19,6 @@ public class RSSItem implements Serializable {
 	private Long id;
 
 	private String channelAddress;
-
 	private String title;
 	private String link;
 	private Boolean readed;
@@ -22,7 +26,7 @@ public class RSSItem implements Serializable {
 	private String guid;
 	private Date date;
 
-
+	
 	public Long getId() {
 		return id;
 	}
