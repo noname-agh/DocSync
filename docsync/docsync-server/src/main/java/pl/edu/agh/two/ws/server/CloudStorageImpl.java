@@ -206,7 +206,7 @@ public class CloudStorageImpl implements CloudStorage {
 		try {
 			EntityManager em = emf.createEntityManager();
 			rssItemList = em.createQuery(
-					"select r from RssItem as r where r.readed = false", RSSItem.class)
+					"select r from RSSItem as r where r.readed = false", RSSItem.class)
 					.getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
