@@ -35,7 +35,6 @@ public class CloudStorageImpl implements CloudStorage {
 
 	public CloudStorageImpl(EntityManagerFactory emf) {
 		this.emf = emf;
-		//JobRunner.runJob();
 	}
 
 	@Override
@@ -98,6 +97,7 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public CloudFile getFileWithContent(CloudFileInfo fileInfo) {
+		
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		CloudFile file = em.find(CloudFile.class, fileInfo.getHash());
