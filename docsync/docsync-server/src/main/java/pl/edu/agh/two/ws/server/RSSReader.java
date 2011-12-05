@@ -1,14 +1,16 @@
 package pl.edu.agh.two.ws.server;
 
-import de.nava.informa.core.ChannelIF;
-import de.nava.informa.core.ItemIF;
-import de.nava.informa.impl.basic.ChannelBuilder;
-import de.nava.informa.parsers.FeedParser;
-import pl.edu.agh.two.ws.RSSItem;
 
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
+
+import pl.edu.agh.two.ws.CloudStorage;
+import pl.edu.agh.two.ws.RSSItem;
+import de.nava.informa.core.ChannelIF;
+import de.nava.informa.core.ItemIF;
+import de.nava.informa.impl.basic.ChannelBuilder;
+import de.nava.informa.parsers.FeedParser;
 
 public class RSSReader {
 
@@ -31,7 +33,12 @@ public class RSSReader {
 				dbItem.setDescription(item.getDescription());
 				dbItem.setGuid(item.getGuid().toString());
 				dbItem.setLink(item.getLink().toString());
+
 				dbItem.setReaded(false);
+				
+				CloudStorage cs = new CloudStorageImpl();
+				cs.addChannel(url.toString());
+				cs.addRSSItem(dbItem);
 
 
 				/*

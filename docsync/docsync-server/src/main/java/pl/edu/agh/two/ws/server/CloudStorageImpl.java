@@ -12,20 +12,9 @@ import javax.persistence.Persistence;
 import javax.xml.ws.WebServiceException;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.ScheduleBuilder;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.edu.agh.two.quartzjob.JobRunner;
-import pl.edu.agh.two.quartzjob.RSSUpdateJob;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
@@ -46,7 +35,7 @@ public class CloudStorageImpl implements CloudStorage {
 
 	public CloudStorageImpl(EntityManagerFactory emf) {
 		this.emf = emf;
-		JobRunner.runJob();
+		//JobRunner.runJob();
 	}
 
 	@Override
@@ -215,8 +204,22 @@ public class CloudStorageImpl implements CloudStorage {
 	}
 
 	@Override
+	public List<RSSItem> getRSSItems() {
+		List<RSSItem> rssItemList = null;
+		try {
+			EntityManager em = emf.createEntityManager();
+			rssItemList = em.createQuery(
+					"select r from RSSItem as r where r.readed = false", RSSItem.class)
+					.getResultList();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return rssItemList;
+	}
+	
 	public List<RSSItem> refreshAndGetRssItems() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = emf.createEntityManager();
+		List<RSSItem> list = em.createNamedQuery("getUnreadedRSSItems").getResultList();
+		return list;
 	}
 }
