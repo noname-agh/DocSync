@@ -8,8 +8,7 @@ public interface CloudStorage {
 
 	/**
 	 * Add new file to cloud storage. File hash is not used, and may be null.
-	 * 
-	 * 
+	 *
 	 * @param file file to add
 	 * @return file info with of added file
 	 */
@@ -38,22 +37,20 @@ public interface CloudStorage {
 	void pushMetadata(CloudFileInfo fileInfo);
 
 	//CloudMetadata pullMetadata(CloudFileInfo file);
-	
-	List<String> getRssChannelList();
-	
-	void addChannel(String address);
-	
-	void removeChannel(String address);
-	
-	void addRSSItem(RSSItem item);
-	
-	void updateRSSItem(RSSItem item);
-	
-	void removeRSSItem(RSSItem item);
-	
-	List<RSSItem> getRSSItems();
-	
-	List<RSSItem> refreshAndGetRssItems();
 
-	
+	List<String> getRssChannelList();
+
+	void addChannel(String address);
+
+	void removeChannel(String address);
+
+	void addRSSItem(RSSItem item);
+
+	void updateRSSItem(RSSItem item);
+
+	void removeRSSItem(RSSItem item);
+
+	List<RSSItem> getRSSItems();
+
+	List<RSSItem> refreshAndGetRssItems();
 }

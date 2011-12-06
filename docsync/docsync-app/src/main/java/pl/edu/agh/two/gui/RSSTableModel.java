@@ -3,6 +3,7 @@ package pl.edu.agh.two.gui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.interfaces.IRSSList;
+import pl.edu.agh.two.rss.RSSService;
 import pl.edu.agh.two.ws.RSSItem;
 
 import javax.swing.table.AbstractTableModel;
@@ -26,14 +27,16 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 	private static final String TITLE_CAPTION = "Title";
 	private static final String LINK_CAPTION = "Link";
 	private static final String DESCRIPTION_CAPTION = "Description";
-	private static final String[] COLUMN_NAMES = new String[]{TITLE_CAPTION, LINK_CAPTION, DESCRIPTION_CAPTION};
+	private static final String CHANNEL = "Channel";
+	private static final String[] COLUMN_NAMES =
+			new String[]{TITLE_CAPTION, LINK_CAPTION, DESCRIPTION_CAPTION, CHANNEL};
 
 	private List<RSSItem> items = new ArrayList<RSSItem>();
 
 	public RSSTableModel() {
 		RSSItem item = new RSSItem();
 		item.setTitle("Title");
-		item.setLink("link");
+		item.setLink("http://www.archlinux.org/feeds/packages/");
 		item.setDescription("description");
 		items.add(item);
 
@@ -50,8 +53,8 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	@Override
 	public int getColumnCount() {
-		// tytuł, link, opis (jeśli jest)
-		return 3;
+		// tytuł, link, opis (jeśli jest), kanał
+		return COLUMN_NAMES.length;
 	}
 
 	@Override
@@ -68,6 +71,8 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 			} else {
 				return "No description";
 			}
+		} else if (j == 3) {
+			return item.getChannelAddress();
 		} else {
 			return null;
 		}
@@ -80,11 +85,15 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	@Override
 	public void getList() {
-		// TODO: implementation
 		log.info("Getting RSS items from server");
 
+		// clear list
+		items.clear();
 
-		// get
+		// get messages
+		RSSService service = RSSService.getInstance();
+		service.getAllRSSItems();
+
 		// sort
 		sortItems(items);
 

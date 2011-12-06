@@ -1,35 +1,27 @@
 package pl.edu.agh.two.ws.server;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pl.edu.agh.two.ws.*;
 
 import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.xml.ws.WebServiceException;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pl.edu.agh.two.ws.CloudFile;
-import pl.edu.agh.two.ws.CloudFileInfo;
-import pl.edu.agh.two.ws.CloudMetadata;
-import pl.edu.agh.two.ws.CloudStorage;
-import pl.edu.agh.two.ws.IMetadata;
-import pl.edu.agh.two.ws.RSSItem;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
-	private static final Logger log = LoggerFactory
-			.getLogger(CloudStorageImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(CloudStorageImpl.class);
 
 	private EntityManagerFactory emf;
 
-	public CloudStorageImpl() {		
+	public CloudStorageImpl() {
 		this(Persistence.createEntityManagerFactory("serverUnit"));
 	}
 
@@ -97,7 +89,7 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public CloudFile getFileWithContent(CloudFileInfo fileInfo) {
-		
+
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		CloudFile file = em.find(CloudFile.class, fileInfo.getHash());
@@ -111,8 +103,7 @@ public class CloudStorageImpl implements CloudStorage {
 		List fileList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			fileList = em.createQuery("from CloudFile", CloudFile.class)
-					.getResultList();
+			fileList = em.createQuery("from CloudFile", CloudFile.class).getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -142,9 +133,7 @@ public class CloudStorageImpl implements CloudStorage {
 		List<String> subscriptionsList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			subscriptionsList = em.createQuery(
-					"select c.address from RssChannel c", String.class)
-					.getResultList();
+			subscriptionsList = em.createQuery("select c.address from RssChannel c", String.class).getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -159,7 +148,7 @@ public class CloudStorageImpl implements CloudStorage {
 		em.getTransaction().commit();
 		em.close();
 	}
-	
+
 	@Override
 	public void updateRSSItem(RSSItem item) {
 		EntityManager em = emf.createEntityManager();
@@ -173,7 +162,7 @@ public class CloudStorageImpl implements CloudStorage {
 	public void removeRSSItem(RSSItem item) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		RSSItem itemCopy = em.find(RSSItem.class, item.getId()); 
+		RSSItem itemCopy = em.find(RSSItem.class, item.getId());
 		em.remove(itemCopy);
 		em.getTransaction().commit();
 		em.close();
@@ -183,11 +172,11 @@ public class CloudStorageImpl implements CloudStorage {
 	public void addChannel(String address) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		
+
 		RssChannel channel = new RssChannel();
 		channel.setAddress(address);
 		em.persist(channel);
-		
+
 		em.getTransaction().commit();
 	}
 
@@ -195,11 +184,12 @@ public class CloudStorageImpl implements CloudStorage {
 	public void removeChannel(String address) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		
+
 		RssChannel channel = em.find(RssChannel.class, address);
-		if(channel != null)
+		if (channel != null) {
 			em.remove(channel);
-		
+		}
+
 		em.getTransaction().commit();
 	}
 
@@ -208,18 +198,17 @@ public class CloudStorageImpl implements CloudStorage {
 		List<RSSItem> rssItemList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			rssItemList = em.createQuery(
-					"select r from RSSItem as r where r.readed = false", RSSItem.class)
+			rssItemList = em.createQuery("select r from RSSItem as r where r.readed = false", RSSItem.class)
 					.getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return rssItemList;
 	}
-	
+
 	public List<RSSItem> refreshAndGetRssItems() {
-		EntityManager em = emf.createEntityManager();
-		List<RSSItem> list = em.createNamedQuery("getUnreadedRSSItems").getResultList();
-		return list;
+		// TODO: implement refreshing
+
+		return getRSSItems();
 	}
 }
