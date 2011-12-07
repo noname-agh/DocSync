@@ -162,7 +162,7 @@ public class CloudStorageImpl implements CloudStorage {
 	public void removeRSSItem(RSSItem item) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		RSSItem itemCopy = em.find(RSSItem.class, item.getId());
+		RSSItem itemCopy = em.find(RSSItem.class, item.getGuid());
 		em.remove(itemCopy);
 		em.getTransaction().commit();
 		em.close();
