@@ -92,7 +92,7 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 		// get messages
 		RSSService service = RSSService.getInstance();
-		service.getAllRSSItems();
+		items.addAll( service.getAllRSSItems() );
 
 		// sort
 		sortItems(items);

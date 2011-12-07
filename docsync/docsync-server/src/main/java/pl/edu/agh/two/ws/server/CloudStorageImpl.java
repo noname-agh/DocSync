@@ -129,86 +129,32 @@ public class CloudStorageImpl implements CloudStorage {
 	}
 
 	@Override
-	public List<String> getRssChannelList() {
-		List<String> subscriptionsList = null;
-		try {
-			EntityManager em = emf.createEntityManager();
-			subscriptionsList = em.createQuery("select c.address from RssChannel c", String.class).getResultList();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return subscriptionsList;
-	}
-
-	@Override
-	public void addRSSItem(RSSItem item) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(item);
-		em.getTransaction().commit();
-		em.close();
-	}
-
-	@Override
-	public void updateRSSItem(RSSItem item) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		em.merge(item);
-		em.getTransaction().commit();
-		em.close();
-	}
-
-	@Override
-	public void removeRSSItem(RSSItem item) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		RSSItem itemCopy = em.find(RSSItem.class, item.getGuid());
-		em.remove(itemCopy);
-		em.getTransaction().commit();
-		em.close();
-	}
-
-	@Override
 	public void addChannel(String address) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-
-		RssChannel channel = new RssChannel();
-		channel.setAddress(address);
-		em.persist(channel);
-
-		em.getTransaction().commit();
+		RSSReader.getInstance().addChannel(address);
 	}
 
 	@Override
 	public void removeChannel(String address) {
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-
-		RssChannel channel = em.find(RssChannel.class, address);
-		if (channel != null) {
-			em.remove(channel);
-		}
-
-		em.getTransaction().commit();
+		RSSReader.getInstance().removeChannel(address);
+	}
+	
+	@Override
+	public List<String> getRssChannelList() {
+		return RSSReader.getInstance().getRssChannelList();
 	}
 
 	@Override
+	public void updateRSSItem(RSSItem item) {
+		RSSReader.getInstance().updateRSSItem(item);
+	}
+
 	public List<RSSItem> getRSSItems() {
-		List<RSSItem> rssItemList = null;
-		try {
-			EntityManager em = emf.createEntityManager();
-			rssItemList = em.createQuery("select r from RSSItem as r where r.readed = false", RSSItem.class)
-					.getResultList();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return rssItemList;
+		return RSSReader.getInstance().getRSSItems();
 	}
 
 	public List<RSSItem> refreshAndGetRssItems() {
-		// TODO: implement refreshing
-
-		return getRSSItems();
+		RSSReader.getInstance().updateAll();
+		
+		return RSSReader.getInstance().getRSSItems();
 	}
 }

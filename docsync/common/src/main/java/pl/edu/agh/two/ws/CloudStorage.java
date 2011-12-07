@@ -44,11 +44,7 @@ public interface CloudStorage {
 
 	void removeChannel(String address);
 
-	void addRSSItem(RSSItem item);
-
 	void updateRSSItem(RSSItem item);
-
-	void removeRSSItem(RSSItem item);
 
 	List<RSSItem> getRSSItems();
 
