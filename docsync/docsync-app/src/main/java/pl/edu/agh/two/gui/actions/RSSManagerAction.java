@@ -100,6 +100,7 @@ public class RSSManagerAction implements ActionListener {
 		RSSService rssService = RSSService.getInstance();
 		
 		List<String> list = rssService.getRssChannelList();
+		model.clear();
 		for (String channel : list) model.addElement(channel);
 	}
 
