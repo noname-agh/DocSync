@@ -27,11 +27,11 @@ public class RSSReader {
 				ItemIF item = (ItemIF) i.next();
 
 				RSSItem dbItem = new RSSItem();
+				dbItem.setGuid(item.getGuid().getLocation());  // .getLocation() returns <guid> tag value
 				dbItem.setTitle(item.getTitle());
 				dbItem.setChannelAddress(url.toString());
 				dbItem.setDate(item.getDate());
 				dbItem.setDescription(item.getDescription());
-				dbItem.setGuid(item.getGuid().toString());
 				dbItem.setLink(item.getLink().toString());
 
 				dbItem.setReaded(false);
