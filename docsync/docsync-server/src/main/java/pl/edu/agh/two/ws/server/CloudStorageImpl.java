@@ -17,7 +17,8 @@ import java.util.List;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
-	private static final Logger log = LoggerFactory.getLogger(CloudStorageImpl.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(CloudStorageImpl.class);
 
 	private EntityManagerFactory emf;
 
@@ -103,7 +104,8 @@ public class CloudStorageImpl implements CloudStorage {
 		List fileList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			fileList = em.createQuery("from CloudFile", CloudFile.class).getResultList();
+			fileList = em.createQuery("from CloudFile", CloudFile.class)
+					.getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -127,6 +129,15 @@ public class CloudStorageImpl implements CloudStorage {
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
 		return Arrays.toString(DigestUtils.md5(content));
 	}
+	
+	public List<RSSItem> getRSSItems() {
+		return RSSReader.getInstance().getRSSItems();
+	}
+
+	@Override
+	public List<String> getRssChannelList() {
+		return RSSReader.getInstance().getRssChannelList();
+	}
 
 	@Override
 	public void addChannel(String address) {
@@ -137,24 +148,10 @@ public class CloudStorageImpl implements CloudStorage {
 	public void removeChannel(String address) {
 		RSSReader.getInstance().removeChannel(address);
 	}
-	
-	@Override
-	public List<String> getRssChannelList() {
-		return RSSReader.getInstance().getRssChannelList();
-	}
 
 	@Override
 	public void updateRSSItem(RSSItem item) {
 		RSSReader.getInstance().updateRSSItem(item);
 	}
 
-	public List<RSSItem> getRSSItems() {
-		return RSSReader.getInstance().getRSSItems();
-	}
-
-	public List<RSSItem> refreshAndGetRssItems() {
-		RSSReader.getInstance().updateAll();
-		
-		return RSSReader.getInstance().getRSSItems();
-	}
 }

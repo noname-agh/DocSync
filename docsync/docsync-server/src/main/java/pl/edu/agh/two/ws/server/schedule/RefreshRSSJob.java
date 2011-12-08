@@ -6,6 +6,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.ws.server.CloudStorageImpl;
+import pl.edu.agh.two.ws.server.RSSReader;
 
 public class RefreshRSSJob implements Job {
 	
@@ -14,7 +15,7 @@ public class RefreshRSSJob implements Job {
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 		LOGGER.debug("Refreshing RSS");
-		new CloudStorageImpl().refreshAndGetRssItems();
+		RSSReader.getInstance().updateAll();
 		LOGGER.debug("Refreshed RSS");
 	}
 }

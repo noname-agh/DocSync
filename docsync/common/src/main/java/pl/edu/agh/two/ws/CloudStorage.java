@@ -38,6 +38,8 @@ public interface CloudStorage {
 
 	//CloudMetadata pullMetadata(CloudFileInfo file);
 
+	List<RSSItem> getRSSItems();
+
 	List<String> getRssChannelList();
 
 	void addChannel(String address);
@@ -45,8 +47,4 @@ public interface CloudStorage {
 	void removeChannel(String address);
 
 	void updateRSSItem(RSSItem item);
-
-	List<RSSItem> getRSSItems();
-
-	List<RSSItem> refreshAndGetRssItems();
 }
