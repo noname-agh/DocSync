@@ -151,4 +151,20 @@ public class FileService implements IFileService {
 		return i >= 0 ? fileName.substring(i + 1) : null;
 	}
 
+	@Override
+	public List<CloudFileInfo> getFilesWithoutContent() {
+		List<CloudFileInfo> cloudFileInfos = cloud.getFiles();
+		return cloudFileInfos;
+	}
+
+	@Override
+	public List<DocSyncFile> getFiles(List<CloudFileInfo> cloudFileInfos) {
+		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
+		for (CloudFileInfo cloudFileInfo : cloudFileInfos) {
+			DocSyncFile file = createDocSyncFileFromCloudFile(cloud.getFileWithContent(cloudFileInfo));
+			list.add(file);
+		}
+		return list;
+	}
+
 }
