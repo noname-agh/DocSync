@@ -1,14 +1,13 @@
 package pl.edu.agh.two.gui.actions;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import pl.edu.agh.two.file.FileOpenException;
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.gui.FileTableModel;
 import pl.edu.agh.two.interfaces.IFileOpener;
+
+import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class OpenFileAction extends MouseAdapter {
 
@@ -28,11 +27,13 @@ public class OpenFileAction extends MouseAdapter {
 			FileTableModel fileList = (FileTableModel) jTable.getModel();
 
 			int row = jTable.getSelectedRow();
+			row = jTable.convertRowIndexToModel(row);
 			if (row != -1) {
 				try {
 					opener.open(fileList.getRow(row));
 				} catch (FileOpenException ex) {
-					JOptionPane.showMessageDialog(DocSyncGUI.getFrame(), ex.getMessage(), "Error opening file", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(DocSyncGUI.getFrame(), ex.getMessage(), "Error opening file",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

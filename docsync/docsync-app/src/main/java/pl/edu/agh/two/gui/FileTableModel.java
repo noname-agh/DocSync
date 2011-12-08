@@ -16,8 +16,8 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<DocSyncFile> files;
-	protected String[] columnNames = new String[]{"path"};
-	protected Class[] columnClasses = new Class[]{String.class};
+	protected String[] columnNames = new String[]{"path", "extension"};
+	protected Class[] columnClasses = new Class[]{String.class, String.class};
 
 	public FileTableModel() {
 		this.files = new LinkedList<DocSyncFile>();
@@ -28,7 +28,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	}
 
 	public int getColumnCount() {
-		return 1;
+		return columnNames.length;
 	}
 
 	public int getRowCount() {
@@ -52,8 +52,20 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 		switch (col) {
 			case 0:
 				return files.get(row).getPath();
+			case 1:
+				String path = files.get(row).getPath();
+				return getExtension(path);
 			default:
 				return null;
+		}
+	}
+
+	private static String getExtension(String path) {
+		final int index = path.lastIndexOf('.');
+		if (index > 0) {
+			return path.substring(index + 1);
+		} else {
+			return "";
 		}
 	}
 

@@ -11,6 +11,7 @@ import pl.edu.agh.two.interfaces.IFileList;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -67,6 +68,7 @@ public class DocSyncGUI extends JFrame {
 
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
+		fileList.setRowSorter(new TableRowSorter<FileTableModel>((FileTableModel) fileList.getModel()));
 		JScrollPane filesScrollPane = new JScrollPane(fileList);
 		JScrollPane rssScrollPane = new JScrollPane(rssList);
 		getFrame().add(tabs);

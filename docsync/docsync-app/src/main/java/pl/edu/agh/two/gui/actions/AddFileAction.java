@@ -1,6 +1,8 @@
 package pl.edu.agh.two.gui.actions;
 
 //import org.apache.commons.io.FileUtils;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
@@ -64,7 +66,7 @@ public class AddFileAction implements ActionListener {
 			}
 			File f1 = new File(srFile);
 			File f2 = new File(dtFile);
-			//FileUtils.copyFile(f1, f2);
+			FileUtils.copyFile(f1, f2);
 			return f2.getAbsolutePath();
 		} catch (Exception e) {
 			e.printStackTrace();
