@@ -22,7 +22,8 @@ public class CloudStorageImplTest {
 	@BeforeMethod
 	public void setUp() {
 		fileDAO = mock(CloudFileDAO.class);
-		storage = new CloudStorageImpl(fileDAO);
+		RSSReader rssReader = mock(RSSReader.class);
+		storage = new CloudStorageImpl(fileDAO, rssReader);
 	}
 
 	@Test

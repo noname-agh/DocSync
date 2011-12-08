@@ -1,44 +1,45 @@
 package pl.edu.agh.two.ws.server;
 
+import org.mockito.ArgumentCaptor;
+import pl.edu.agh.two.ws.dao.RSSChannelDAO;
+import pl.edu.agh.two.ws.dao.RSSItemDAO;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import java.util.List;
 
+import org.testng.annotations.BeforeMethod;
 import static org.testng.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 @org.testng.annotations.Test
 public class RssChannelsServerTest {
+	
+	private RSSReader reader;
+	private RSSChannelDAO rssChannelDAO;
+	private RSSItemDAO rssItemDAO;
+	
+	@BeforeMethod
+	public void setUp() {
+		rssChannelDAO = mock(RSSChannelDAO.class);
+		rssItemDAO = mock(RSSItemDAO.class);
+		reader = new RSSReader(rssChannelDAO, rssItemDAO);
+	}
 
 	public void testAddChannel() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
-		RSSReader c = new RSSReader(emf);
-
 		String address = "bleble";
-		c.addChannel(address);
-
-		List<String> channels = c.getRssChannelList();
-
-		assertEquals(channels.size(), 1);
-		assertEquals(channels.get(0), address);
+		reader.addChannel(address);
+		
+		ArgumentCaptor<RSSChannel> channel = ArgumentCaptor.forClass(RSSChannel.class);
+		verify(rssChannelDAO).addRSSChannel(channel.capture());
+		assertEquals(address, channel.getValue().getAddress());
 	}
 
 	public void testRemoveChannel() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
-		RSSReader c = new RSSReader(emf);
-
 		String address = "bleble";
-		c.addChannel(address);
-
-		List<String> channels = c.getRssChannelList();
-
-		assertEquals(channels.size(), 1);
-		assertEquals(channels.get(0), address);
-
-		c.removeChannel(address);
-
-		channels = c.getRssChannelList();
-
-		assertEquals(channels.size(), 0);
+		reader.removeChannel(address);
+		ArgumentCaptor<RSSChannel> channel = ArgumentCaptor.forClass(RSSChannel.class);
+		verify(rssChannelDAO).removeRSSChannel(channel.capture());
+		assertEquals(address, channel.getValue().getAddress());
 	}
 }

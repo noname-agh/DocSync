@@ -15,6 +15,9 @@ public class RSSChannelDAOImpl implements RSSChannelDAO {
 		this.entityManager = entityManager;
 	}
 
+	public RSSChannelDAOImpl() {
+	}
+	
 	public RSSChannelDAOImpl(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}

@@ -18,9 +18,11 @@ public class CloudStorageImpl implements CloudStorage {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CloudStorageImpl.class);
 
 	private CloudFileDAO cloudFileDAO;
-	
-	public CloudStorageImpl(CloudFileDAO cloudFileDAO) {
+	private RSSReader rssReader;
+
+	public CloudStorageImpl(CloudFileDAO cloudFileDAO, RSSReader rssReader) {
 		this.cloudFileDAO = cloudFileDAO;
+		this.rssReader = rssReader;
 	}
 	
 	@Override
@@ -86,7 +88,7 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public void updateAll() {
-		RSSReader.getInstance().updateAll();
+		rssReader.updateAll();
 	}
 
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
@@ -95,27 +97,27 @@ public class CloudStorageImpl implements CloudStorage {
 
 	@Override
 	public List<RSSItem> getRSSItems() {
-		return RSSReader.getInstance().getRSSItems();
+		return rssReader.getRSSItems();
 	}
 
 	@Override
 	public List<String> getRssChannelList() {
-		return RSSReader.getInstance().getRssChannelList();
+		return rssReader.getRssChannelList();
 	}
 
 	@Override
 	public void addChannel(String address) {
-		RSSReader.getInstance().addChannel(address);
+		rssReader.addChannel(address);
 	}
 
 	@Override
 	public void removeChannel(String address) {
-		RSSReader.getInstance().removeChannel(address);
+		rssReader.removeChannel(address);
 	}
 
 	@Override
 	public void updateRSSItem(RSSItem item) {
-		RSSReader.getInstance().updateRSSItem(item);
+		rssReader.updateRSSItem(item);
 	}
 
 }

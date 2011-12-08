@@ -33,7 +33,7 @@ public class Test {
 		item.setGuid("guid");
 		item.setLink("liiiink");
 		item.setReaded(false);
-		RSSReader.getInstance().updateRSSItem(item);
+		storage.updateRSSItem(item);
 		List<RSSItem> list2 = storage.getRSSItems();
 		System.out.println(list2.get(0).getChannelAddress());
  		//CloudFile file = storage.getFiles().get(0);

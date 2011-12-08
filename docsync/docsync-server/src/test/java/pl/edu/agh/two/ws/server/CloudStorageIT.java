@@ -1,5 +1,7 @@
 package pl.edu.agh.two.ws.server;
 
+import pl.edu.agh.two.ws.dao.RSSItemDAOImpl;
+import javax.persistence.EntityManager;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pl.edu.agh.two.ws.dao.CloudFileDAOImpl;
+import pl.edu.agh.two.ws.dao.RSSChannelDAOImpl;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class CloudStorageIT {
@@ -32,9 +35,11 @@ public class CloudStorageIT {
 	public void setUp() throws MalformedURLException {
 		/* Publish service */
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
+		EntityManager em = emf.createEntityManager();
 		CloudFileDAOImpl cloudFileDAO = new CloudFileDAOImpl();
-		cloudFileDAO.setEntityManager(emf.createEntityManager());
-		endpoint = Endpoint.publish(SERVICE_URL, new CloudStorageImpl(cloudFileDAO));
+		cloudFileDAO.setEntityManager(em);
+		RSSReader rssReader = new RSSReader(new RSSChannelDAOImpl(em), new RSSItemDAOImpl(em));
+		endpoint = Endpoint.publish(SERVICE_URL, new CloudStorageImpl(cloudFileDAO, rssReader));
 
 		/* Create proxy to service */
 		Service service = Service.create(new URL(SERVICE_URL + "CloudStorage?wsdl"), new QName(

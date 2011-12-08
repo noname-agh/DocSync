@@ -30,13 +30,19 @@
 	</bean>
 	
 	<bean id="cloudFileDAO" class="pl.edu.agh.two.ws.dao.CloudFileDAOImpl"/>
+	<bean id="rssChannelDAO" class="pl.edu.agh.two.ws.dao.RSSChannelDAOImpl"/>
+	<bean id="rssItemDAO" class="pl.edu.agh.two.ws.dao.RSSItemDAOImpl"/>
+	<bean id="rssReader" class="pl.edu.agh.two.ws.server.RSSReader">
+		<constructor-arg ref="rssChannelDAOTX"/>
+		<constructor-arg ref="rssItemDAOTX"/>
+	</bean>
 	<bean id="cloudStorage" class="pl.edu.agh.two.ws.server.CloudStorageImpl">
 		<constructor-arg ref="cloudFileDAOTX"/>
+		<constructor-arg ref="rssReader"/>
 	</bean>
 	
-	<bean id="cloudFileDAOTX" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+	<bean id="baseTX" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
 		<property name="transactionManager" ref="transactionManager"/>
-		<property name="target" ref="cloudFileDAO"/>
 		<property name="transactionAttributes">
 			<props>
 				<prop key="*">PROPAGATION_REQUIRED</prop>
@@ -44,11 +50,22 @@
 		</property>
 	</bean>
 	
+	<bean id="cloudFileDAOTX" parent="baseTX">
+		<property name="target" ref="cloudFileDAO"/>
+	</bean>
+	
+	<bean id="rssItemDAOTX" parent="baseTX">
+		<property name="target" ref="rssItemDAO"/>
+	</bean>
+	
+	<bean id="rssChannelDAOTX" parent="baseTX">
+		<property name="target" ref="rssChannelDAO"/>
+	</bean>
+	
     <wss:binding url="/CloudStorage">
         <wss:service>
             <ws:service bean="#cloudStorage" impl="pl.edu.agh.two.ws.server.CloudStorageImpl"/>
         </wss:service>
     </wss:binding>
-
 
 </beans>
