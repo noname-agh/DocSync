@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.edu.agh.two.ws.dao.CloudFileDAOImpl;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class CloudStorageIT {
@@ -31,7 +32,9 @@ public class CloudStorageIT {
 	public void setUp() throws MalformedURLException {
 		/* Publish service */
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
-		endpoint = Endpoint.publish(SERVICE_URL, new CloudStorageImpl(emf));
+		CloudFileDAOImpl cloudFileDAO = new CloudFileDAOImpl();
+		cloudFileDAO.setEntityManager(emf.createEntityManager());
+		endpoint = Endpoint.publish(SERVICE_URL, new CloudStorageImpl(cloudFileDAO));
 
 		/* Create proxy to service */
 		Service service = Service.create(new URL(SERVICE_URL + "CloudStorage?wsdl"), new QName(

@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import pl.edu.agh.two.ws.CloudFile;
+import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudStorage;
 import pl.edu.agh.two.ws.RSSItem;
 
@@ -20,7 +21,8 @@ public class Test {
 		CloudFile cl = new CloudFile();
 		cl.setContent("ala123".getBytes());
 		cl.setName("name");
-		storage.addFile(cl);
+		CloudFileInfo ci = storage.addFile(cl);
+		System.out.println("Hash: "+ci.getHash());
 		List<CloudFile> list = storage.getAllFilesWithContent();
 		System.out.println(list.get(0).getName());
 		RSSItem item = new RSSItem();

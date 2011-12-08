@@ -2,7 +2,6 @@ package pl.edu.agh.two.ws.server;
 
 import java.net.URL;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -29,6 +28,10 @@ public class RSSReader {
 		// example rss feeds at startup
 		//addChannel("http://xkcd.com/rss.xml");
 		//addChannel("http://planet.lisp.org/rss20.xml");
+	}
+
+	public RSSReader(EntityManagerFactory emf) {
+		this.emf = emf;
 	}
 
 	public static RSSReader getInstance() {
@@ -73,7 +76,7 @@ public class RSSReader {
 	public void addChannel(String address) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		RssChannel channel = new RssChannel();
+		RSSChannel channel = new RSSChannel();
 		channel.setAddress(address);
 		em.persist(channel);
 		em.getTransaction().commit();
@@ -83,7 +86,7 @@ public class RSSReader {
 	public void removeChannel(String address) {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
-		RssChannel channel = em.find(RssChannel.class, address);
+		RSSChannel channel = em.find(RSSChannel.class, address);
 		if (channel != null) {
 			em.remove(channel);
 		}
@@ -95,7 +98,7 @@ public class RSSReader {
 		List<String> subscriptionsList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			subscriptionsList = em.createQuery("select c.address from RssChannel c", String.class).getResultList();
+			subscriptionsList = em.createQuery("select c.address from RSSChannel c", String.class).getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

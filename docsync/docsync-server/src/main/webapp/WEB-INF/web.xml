@@ -18,9 +18,7 @@
 	
 	<servlet>
 		<servlet-name>jaxws-servlet</servlet-name>
-		<servlet-class>
-    		          com.sun.xml.ws.transport.http.servlet.WSSpringServlet
-		</servlet-class>
+		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSSpringServlet</servlet-class>
 	</servlet>
  
 	<servlet-mapping>

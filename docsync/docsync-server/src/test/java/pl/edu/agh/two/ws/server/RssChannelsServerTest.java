@@ -2,7 +2,6 @@ package pl.edu.agh.two.ws.server;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import pl.edu.agh.two.ws.CloudStorage;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class RssChannelsServerTest {
 
 	public void testAddChannel() {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
-		CloudStorage c = new CloudStorageImpl(emf);
+		RSSReader c = new RSSReader(emf);
 
 		String address = "bleble";
 		c.addChannel(address);
@@ -26,7 +25,7 @@ public class RssChannelsServerTest {
 
 	public void testRemoveChannel() {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
-		CloudStorage c = new CloudStorageImpl(emf);
+		RSSReader c = new RSSReader(emf);
 
 		String address = "bleble";
 		c.addChannel(address);

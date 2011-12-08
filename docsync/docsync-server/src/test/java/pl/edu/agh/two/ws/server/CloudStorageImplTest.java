@@ -1,58 +1,57 @@
 package pl.edu.agh.two.ws.server;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import pl.edu.agh.two.ws.dao.CloudFileDAO;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.mockito.ArgumentCaptor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pl.edu.agh.two.ws.CloudFile;
-import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudMetadata;
 import pl.edu.agh.two.ws.CloudStorage;
 
 import static org.testng.AssertJUnit.*;
+import static org.mockito.Mockito.*;
 
 public class CloudStorageImplTest {
 	
 	private CloudStorage storage;
+	private CloudFileDAO fileDAO;
 	
 	@BeforeMethod
 	public void setUp() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testServerUnit");
-		storage = new CloudStorageImpl(emf);
+		fileDAO = mock(CloudFileDAO.class);
+		storage = new CloudStorageImpl(fileDAO);
 	}
 
 	@Test
 	public void testAddFile() {
+		CloudMetadata metadata = new  CloudMetadata();
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("key", "value");
-		
-		CloudMetadata metadata = new  CloudMetadata();
 		metadata.setMap(data);
 		
 		CloudFile file = new CloudFile();
-		file.setName("abc");
+		file.setName("filename.pdf");
 		file.setMetadata(metadata);
 		file.setContent(new byte[] {1,2,3});
 		
-		CloudFileInfo fileInfo = storage.addFile(file);
-		CloudFile retFile = storage.getFileWithContent(fileInfo);
+		ArgumentCaptor<CloudFile> fileCaptor = ArgumentCaptor.forClass(CloudFile.class);
+		storage.addFile(file);
 		
-		assertNotNull(retFile.getHash());
-		assertEquals(file.getName(), retFile.getName());
-		assertEquals(file.getContent(), retFile.getContent());
+		verify(fileDAO).addCloudFile(fileCaptor.capture());
+		assertEquals("filename.pdf", fileCaptor.getValue().getName());
+		assertEquals(new byte[] {1,2,3}, fileCaptor.getValue().getContent());
+		assertEquals("value", fileCaptor.getValue().getMetadata().get("key"));
 	}
 
 	@Test
 	public void testRemoveFile() {
-		CloudFile file = new CloudFile();
-		file.setContent(new byte[] {0});
-		CloudFileInfo fileInfo = storage.addFile(file);
-		assertEquals(1, storage.getFiles().size());
-		storage.removeFile(fileInfo);
-		assertEquals(0, storage.getFiles().size());
+		CloudFile file = mock(CloudFile.class);
+		stub(file.getHash()).toReturn("0x123");
+		storage.removeFile(file);
+		verify(fileDAO).removeCloudFile(file);
 	}
 
 }
