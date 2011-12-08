@@ -3,6 +3,7 @@ package pl.edu.agh.two.gui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -10,6 +11,8 @@ import javax.swing.table.AbstractTableModel;
 import pl.edu.agh.two.interfaces.IRSSList;
 import pl.edu.agh.two.log.ILogger;
 import pl.edu.agh.two.log.LoggerFactory;
+import pl.edu.agh.two.rss.RSSService;
+import pl.edu.agh.two.utils.RSSItemFilterUtil;
 import pl.edu.agh.two.ws.RSSItem;
 
 /**
@@ -34,9 +37,36 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	private List<RSSItem> items = new ArrayList<RSSItem>();
 
+	public List<RSSItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<RSSItem> items) {
+		this.items = items;
+	}
+
+	public RSSTableModel() {
+		RSSItem item = new RSSItem();
+		item.setTitle("Title");
+		item.setLink("http://www.archlinux.org/feeds/packages/");
+		item.setDescription("description");
+		items.add(item);
+
+		RSSItem item2 = new RSSItem();
+		item2.setTitle("Title");
+		item2.setLink("link");
+		items.add(item2);
+	}
+
 	@Override
 	public int getRowCount() {
-		return items.size();
+		return getFilteredItems().size();
+	}
+	
+	public List<RSSItem> getFilteredItems() {
+		List<RSSItem> filteredItems = new LinkedList<RSSItem>();
+		for (RSSItem item : items) if (item.getIsShown()) filteredItems.add(item);
+		return filteredItems;
 	}
 
 	@Override
@@ -82,9 +112,27 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 		return COLUMN_NAMES[i];
 	}
 
+	public void getList() {
+		LOGGER.info("Getting RSS items from server", false);
+
+		// clear list
+		items.clear();
+
+		// get messages
+		RSSService service = RSSService.getInstance();
+		items.addAll(service.getAllRSSItems());
+		
+		// sort
+		sortItems(items);
+
+		RSSItemFilterUtil.doFilter();
+		// refresh
+		DocSyncGUI.refreshRSSList();
+	}
+
 	@Override
 	public RSSItem getItem(int i) {
-		return items.get(i);
+		return getFilteredItems().get(i);
 	}
 
 	@Override

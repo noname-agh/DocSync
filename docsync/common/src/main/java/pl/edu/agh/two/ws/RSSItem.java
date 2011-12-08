@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 @Entity
 @NamedQuery(name = "getUnreadedRSSItems", query = "SELECT rss FROM RSSItem rss WHERE rss.readed = FALSE")
@@ -21,6 +22,17 @@ public class RSSItem implements Serializable {
 	private Boolean readed;
 	private String description;
 	private Date date;
+	
+	@Transient
+	private Boolean isShown = true;
+
+	public Boolean getIsShown() {
+		return isShown;
+	}
+
+	public void setIsShown(Boolean isShown) {
+		this.isShown = isShown;
+	}
 
 	public String getChannelAddress() {
 		return channelAddress;

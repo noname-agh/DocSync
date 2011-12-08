@@ -2,14 +2,17 @@ package pl.edu.agh.two.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -17,12 +20,14 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 
+
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileOpenerWrapper;
 import pl.edu.agh.two.file.ListPersistence;
 import pl.edu.agh.two.file.PDFFileOpener;
 import pl.edu.agh.two.gui.actions.AddFileAction;
 import pl.edu.agh.two.gui.actions.ExitAction;
+import pl.edu.agh.two.gui.actions.FilterRSSItemsAction;
 import pl.edu.agh.two.gui.actions.GetAllFilesAction;
 import pl.edu.agh.two.gui.actions.GetFilesListAction;
 import pl.edu.agh.two.gui.actions.GetLogAction;
@@ -49,6 +54,15 @@ public class DocSyncGUI extends JFrame {
 	private static DocSyncGUI frame;
 	private static JTable fileList;
 	private static JTable rssList;
+	
+	public static JTable getRssList() {
+		return rssList;
+	}
+
+	public static void setRssList(JTable rssList) {
+		DocSyncGUI.rssList = rssList;
+	}
+
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
@@ -56,6 +70,9 @@ public class DocSyncGUI extends JFrame {
 			new ListPersistence<DocSyncFile>(storagePath + ".file");
 	private static final ListPersistence<RSSItem> rssListPersistence = 
 			new ListPersistence<RSSItem>(storagePath + ".rss");
+	
+	private static final JCheckBox readedCheckbox = new JCheckBox("Readed", true);
+	private static final JCheckBox unreadedCheckbox = new JCheckBox("Unreaded", true);
 
 	public DocSyncGUI() throws HeadlessException {
 		super();
@@ -100,9 +117,24 @@ public class DocSyncGUI extends JFrame {
 				(FileTableModel) fileList.getModel()));
 		JScrollPane filesScrollPane = new JScrollPane(fileList);
 		JScrollPane rssScrollPane = new JScrollPane(rssList);
+		
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout());
+		buttonPane.add(readedCheckbox);
+		buttonPane.add(unreadedCheckbox);
+		readedCheckbox.addActionListener(new FilterRSSItemsAction());
+		unreadedCheckbox.addActionListener(new FilterRSSItemsAction());
+		
+				
+		JPanel rssPane = new JPanel();
+		rssPane.setLayout(new BorderLayout());
+		rssPane.add(buttonPane, BorderLayout.NORTH);
+		rssPane.add(rssScrollPane,BorderLayout.SOUTH);
+	
+		
 		getFrame().add(tabs);
 		tabs.add("Files", filesScrollPane);
-		tabs.add("RSS", rssScrollPane);
+		tabs.add("RSS", rssPane);
 
 		try {
 			for (DocSyncFile dcf : fileListPersistence.load()) {
@@ -190,7 +222,7 @@ public class DocSyncGUI extends JFrame {
 		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
 	}
 
-	public static void refreshRSSList() {
+	public static void refreshRSSList() {		
 		((AbstractTableModel) rssList.getModel()).fireTableDataChanged();
 	}
 
@@ -220,5 +252,13 @@ public class DocSyncGUI extends JFrame {
 			fileList.add(file);
 		}
 		refreshFileList();
+	}
+	
+	public static boolean isRSSReadedSelected() {
+		return readedCheckbox.isSelected();
+	}
+	
+	public static boolean isRSSUnreadedSelected() {
+		return unreadedCheckbox.isSelected();
 	}
 }
