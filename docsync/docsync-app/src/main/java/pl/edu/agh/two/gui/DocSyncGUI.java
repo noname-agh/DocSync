@@ -63,6 +63,7 @@ public class DocSyncGUI extends JFrame {
 		FileOpenerWrapper fileOpener = new FileOpenerWrapper();
 		fileOpener.registerOpener("pdf", new PDFFileOpener());
 		fileList.addMouseListener(new OpenFileAction(fileOpener));
+		rssList.addMouseListener(new OpenRSSAction());
 
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
