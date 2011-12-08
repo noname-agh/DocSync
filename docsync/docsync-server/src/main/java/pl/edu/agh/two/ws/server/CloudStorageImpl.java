@@ -114,6 +114,7 @@ public class CloudStorageImpl implements CloudStorage {
 	public void pushMetadata(CloudFileInfo fileInfo) {
 		log.debug("Pushing metadata for file " + fileInfo);
 		IMetadata md = fileInfo.getMetadata();
+		md.setVersion(md.getVersion() + 1);
 		EntityManager em = emf.createEntityManager();
 		CloudFile file = em.find(CloudFile.class, fileInfo.getHash());
 		file.setMetadata(md);
