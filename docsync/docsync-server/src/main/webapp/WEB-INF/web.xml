@@ -4,7 +4,10 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
         version="2.4">
 	<listener>
-		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
@@ -12,14 +15,18 @@
 	<listener>
 		<listener-class>pl.edu.agh.two.ws.server.schedule.JobScheduler</listener-class>
 	</listener>
+	
 	<servlet>
-		<servlet-name>CloudStorage</servlet-name>
-		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<servlet-name>jaxws-servlet</servlet-name>
+		<servlet-class>
+    		          com.sun.xml.ws.transport.http.servlet.WSSpringServlet
+		</servlet-class>
 	</servlet>
+ 
 	<servlet-mapping>
-		<servlet-name>CloudStorage</servlet-name>
+		<servlet-name>jaxws-servlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
+	
 </web-app>
         
