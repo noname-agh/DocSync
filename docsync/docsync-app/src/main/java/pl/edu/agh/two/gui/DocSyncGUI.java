@@ -68,6 +68,8 @@ public class DocSyncGUI extends JFrame {
 
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
+		fileList.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+		fileList.getColumnModel().getColumn(1).setMaxWidth(150);
 		fileList.setRowSorter(new TableRowSorter<FileTableModel>((FileTableModel) fileList.getModel()));
 		JScrollPane filesScrollPane = new JScrollPane(fileList);
 		JScrollPane rssScrollPane = new JScrollPane(rssList);
