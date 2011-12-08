@@ -13,7 +13,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class GetAllFilesAction implements ActionListener {
-	private static final Logger log = LoggerFactory.getLogger(GetAllFilesAction.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(GetAllFilesAction.class);
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

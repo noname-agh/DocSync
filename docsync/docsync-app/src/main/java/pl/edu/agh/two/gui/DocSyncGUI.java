@@ -1,20 +1,44 @@
 package pl.edu.agh.two.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
+import javax.xml.crypto.Data;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileListPersistence;
 import pl.edu.agh.two.file.FileOpenerWrapper;
 import pl.edu.agh.two.file.PDFFileOpener;
-import pl.edu.agh.two.gui.actions.*;
+import pl.edu.agh.two.gui.actions.AddFileAction;
+import pl.edu.agh.two.gui.actions.ExitAction;
+import pl.edu.agh.two.gui.actions.GetAllFilesAction;
+import pl.edu.agh.two.gui.actions.GetLogAction;
+import pl.edu.agh.two.gui.actions.OpenFileAction;
+import pl.edu.agh.two.gui.actions.OpenRSSAction;
+import pl.edu.agh.two.gui.actions.RSSManagerAction;
+import pl.edu.agh.two.gui.actions.RSSRefreshAction;
 import pl.edu.agh.two.interfaces.IFileList;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 /**
  * TODO: add comments.
@@ -32,6 +56,7 @@ public class DocSyncGUI extends JFrame {
 	private static DocSyncGUI frame;
 	private static JTable fileList;
 	private static JTable rssList;
+	private static ArrayList<String> logList = new ArrayList<String>();
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
@@ -45,6 +70,7 @@ public class DocSyncGUI extends JFrame {
 		frame = new DocSyncGUI();
 		initGUI();
 		getFrame().setVisible(true);
+		getFrame().setLocationRelativeTo(null);
 	}
 
 	private static void initGUI() {
@@ -116,6 +142,10 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem exitItem = new JMenuItem("Exit");
 		file.add(exitItem);
 		exitItem.addActionListener(new ExitAction());
+		
+		JMenuItem logItem = new JMenuItem("Log");
+		logItem.addActionListener(new GetLogAction());
+		menuBar.add(logItem);
 
 		getFrame().addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(WindowEvent winEvt) {
@@ -156,5 +186,24 @@ public class DocSyncGUI extends JFrame {
 			e.printStackTrace();
 		}
 		System.exit(0);
+	}
+	
+	public static List<String> getLogList() {
+		return DocSyncGUI.logList;
+	}
+	
+	public static void error(String errorMsg) {
+		DocSyncGUI.logList.add(new Date() + " [ERROR] " + errorMsg);
+		JOptionPane.showMessageDialog(getFrame(), errorMsg);
+	}
+	
+	public static void debug(String debugMsg) {
+		DocSyncGUI.logList.add(new Date() + " [DEBUG] " + debugMsg);
+		JOptionPane.showMessageDialog(getFrame(), debugMsg);
+	}
+	
+	public static void info(String infoMsg) {
+		DocSyncGUI.logList.add(new Date() + " [INFO] " + infoMsg);
+		JOptionPane.showMessageDialog(getFrame(), infoMsg);
 	}
 }

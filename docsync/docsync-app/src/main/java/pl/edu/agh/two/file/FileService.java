@@ -1,5 +1,18 @@
 package pl.edu.agh.two.file;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,34 +23,31 @@ import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudStorage;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 public class FileService implements IFileService {
-	private static final Logger log = LoggerFactory.getLogger(FileService.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(FileService.class);
 
-	public static final String wsUrl = ConfigReader.getInstance().getProperty("ws.url");
-	public static final String wsNamespace = ConfigReader.getInstance().getProperty("ws.ns");
-	public static final String wsName = ConfigReader.getInstance().getProperty("ws.name");
+	public static final String wsUrl = ConfigReader.getInstance().getProperty(
+			"ws.url");
+	public static final String wsNamespace = ConfigReader.getInstance()
+			.getProperty("ws.ns");
+	public static final String wsName = ConfigReader.getInstance().getProperty(
+			"ws.name");
 
-	public static final String storagePath = ConfigReader.getInstance().getProperty("storage.path");
+	public static final String storagePath = ConfigReader.getInstance()
+			.getProperty("storage.path");
 	private static CloudStorage cloud;
 	private static IFileService fileService;
 
 	private FileService() {
 		Service service = null;
 		try {
-			service = Service.create(new URL(wsUrl), new QName(wsNamespace, wsName));
-		} catch (MalformedURLException e) {
-			log.error("Can not create service.", e);
+			service = Service.create(new URL(wsUrl), new QName(wsNamespace,
+					wsName));
+			cloud = service.getPort(CloudStorage.class);
+		} catch (Exception e) {
+			log.error("Cannot create service.", e);
 		}
-		cloud = service.getPort(CloudStorage.class);
 	}
 
 	/*
@@ -65,14 +75,19 @@ public class FileService implements IFileService {
 
 	@Override
 	public List<DocSyncFile> getAllFilesWithContent() {
-		List<CloudFile> cloudFiles = cloud.getAllFilesWithContent();
 		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
-		File dir = new File(FileService.storagePath);
-		if (!(dir.exists() && dir.isDirectory())) {
-			new File(FileService.storagePath).mkdirs();
-		}
-		for (CloudFile cloudFile : cloudFiles) {
-			list.add(createDocSyncFileFromCloudFile(cloudFile));
+		try {
+			List<CloudFile> cloudFiles = cloud.getAllFilesWithContent();
+			File dir = new File(FileService.storagePath);
+			if (!(dir.exists() && dir.isDirectory())) {
+				new File(FileService.storagePath).mkdirs();
+			}
+			for (CloudFile cloudFile : cloudFiles) {
+				list.add(createDocSyncFileFromCloudFile(cloudFile));
+			}
+		} catch (Exception ex) {
+			log.error("Cannot fetch files from server.", ex);
+			DocSyncGUI.error("Cannot fetch files from server.");
 		}
 		return list;
 
@@ -80,11 +95,16 @@ public class FileService implements IFileService {
 
 	@Override
 	public void pushMetadata(DocSyncFile file) {
-		CloudFileInfo fileInfo = new CloudFileInfo();
-		fileInfo.setHash(file.getHash());
-		fileInfo.setName(this.getName(file.getPath()));
-		fileInfo.setMetadata(file.getMeta());
-		cloud.pushMetadata(fileInfo);
+		try {
+			CloudFileInfo fileInfo = new CloudFileInfo();
+			fileInfo.setHash(file.getHash());
+			fileInfo.setName(this.getName(file.getPath()));
+			fileInfo.setMetadata(file.getMeta());
+			cloud.pushMetadata(fileInfo);
+		} catch (Exception ex) {
+			log.error("Cannot push metadata.", ex);
+			DocSyncGUI.error("Cannot push metadata.");
+		}
 	}
 
 	private String getName(String path) {
@@ -105,7 +125,8 @@ public class FileService implements IFileService {
 			// Before converting to an int type, check
 			// to ensure that file is not larger than Integer.MAX_VALUE.
 			if (length > Integer.MAX_VALUE) {
-				log.warn("File %s is to large (filepath: %s)", file.getName(), file.getAbsolutePath());
+				log.warn("File %s is to large (filepath: %s)", file.getName(),
+						file.getAbsolutePath());
 				return null;
 			}
 
@@ -115,13 +136,15 @@ public class FileService implements IFileService {
 			// Read in the bytes
 			int offset = 0;
 			int numRead = 0;
-			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			while (offset < bytes.length
+					&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 				offset += numRead;
 			}
 
 			// Ensure all the bytes have been read in
 			if (offset < bytes.length) {
-				throw new IOException("Could not completely read file " + file.getName());
+				throw new IOException("Could not completely read file "
+						+ file.getName());
 			}
 
 			return bytes;
@@ -133,7 +156,8 @@ public class FileService implements IFileService {
 	}
 
 	private DocSyncFile createDocSyncFileFromCloudFile(CloudFile cloudFile) {
-		File file = new File(storagePath + System.getProperty("file.separator") + cloudFile.getName());
+		File file = new File(storagePath + System.getProperty("file.separator")
+				+ cloudFile.getName());
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(cloudFile.getContent());
@@ -143,8 +167,9 @@ public class FileService implements IFileService {
 			docsyncFile.setMeta(cloudFile.getMetadata());
 			docsyncFile.setHash(cloudFile.getHash());
 			return docsyncFile;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			log.error("Cannot get files content.", ex);
+			DocSyncGUI.error("Cannot get files content.");
 		}
 		return null;
 	}
@@ -157,20 +182,27 @@ public class FileService implements IFileService {
 	@Override
 	public List<CloudFileInfo> getFilesWithoutContent() {
 		List<CloudFileInfo> returnList = new ArrayList<CloudFileInfo>();
-		List<DocSyncFile> docSyncFileList =  DocSyncGUI.getFrame().getFileList().getDocSyncFileList();
-		for(CloudFileInfo cloudFileInfo :cloud.getFiles()) {
-			boolean found = false;
-			for (DocSyncFile docSyncFile : docSyncFileList) {
-				if(docSyncFile.getHash().equals(cloudFileInfo.getHash())) {
-					found = true;
-					if(docSyncFile.getMeta().getVersion()<cloudFileInfo.getMetadata().getVersion()) {
-						returnList.add(cloudFileInfo);
+		try {
+			List<DocSyncFile> docSyncFileList = DocSyncGUI.getFrame()
+					.getFileList().getDocSyncFileList();
+			for (CloudFileInfo cloudFileInfo : cloud.getFiles()) {
+				boolean found = false;
+				for (DocSyncFile docSyncFile : docSyncFileList) {
+					if (docSyncFile.getHash().equals(cloudFileInfo.getHash())) {
+						found = true;
+						if (docSyncFile.getMeta().getVersion() < cloudFileInfo
+								.getMetadata().getVersion()) {
+							returnList.add(cloudFileInfo);
+						}
 					}
 				}
+				if (!found) {
+					returnList.add(cloudFileInfo);
+				}
 			}
-			if (!found) {
-				returnList.add(cloudFileInfo);
-			}
+		} catch (Exception ex) {
+			log.error("Cannot get files without content.", ex);
+			DocSyncGUI.error("Cannot get files without content.");
 		}
 		return returnList;
 	}
@@ -178,9 +210,15 @@ public class FileService implements IFileService {
 	@Override
 	public List<DocSyncFile> getFiles(List<CloudFileInfo> cloudFileInfos) {
 		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
-		for (CloudFileInfo cloudFileInfo : cloudFileInfos) {
-			DocSyncFile file = createDocSyncFileFromCloudFile(cloud.getFileWithContent(cloudFileInfo));
-			list.add(file);
+		try {
+			for (CloudFileInfo cloudFileInfo : cloudFileInfos) {
+				DocSyncFile file = createDocSyncFileFromCloudFile(cloud
+						.getFileWithContent(cloudFileInfo));
+				list.add(file);
+			}
+		} catch (Exception ex) {
+			log.error("Cannot get files.", ex);
+			DocSyncGUI.error("Cannot get files.");
 		}
 		return list;
 	}

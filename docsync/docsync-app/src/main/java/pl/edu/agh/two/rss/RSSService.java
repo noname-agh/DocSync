@@ -1,16 +1,19 @@
 package pl.edu.agh.two.rss;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.edu.agh.two.utils.ConfigReader;
-import pl.edu.agh.two.ws.CloudStorage;
-import pl.edu.agh.two.ws.RSSItem;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import pl.edu.agh.two.gui.DocSyncGUI;
+import pl.edu.agh.two.utils.ConfigReader;
+import pl.edu.agh.two.ws.CloudStorage;
+import pl.edu.agh.two.ws.RSSItem;
 
 
 public class RSSService {
@@ -27,10 +30,10 @@ public class RSSService {
 		Service service = null;
 		try {
 			service = Service.create(new URL(wsUrl), new QName(wsNamespace, wsName));
-		} catch (MalformedURLException e) {
-			log.error("Can not create rss service.", e);
+			cloud = service.getPort(CloudStorage.class);
+		} catch (Exception e) {
+			log.error("Cannot create rss service.", e);
 		}
-		cloud = service.getPort(CloudStorage.class);
 	}
 
 	public static RSSService getInstance() {
@@ -41,27 +44,63 @@ public class RSSService {
 	}
 
 	public void addChannel(String address) {
-		cloud.addChannel(address);
+		try {
+			cloud.addChannel(address);
+		} catch (Exception ex) {
+			log.error("Cannot add RSSChanel.", ex);
+			DocSyncGUI.error("Cannot add RSSChanel.");
+		}
 	}
 
 	public void removeChannel(String address) {
-		cloud.removeChannel(address);
+		try {
+			cloud.removeChannel(address);
+		} catch (Exception ex) {
+			log.error("Cannot remove RSSChanel.", ex);
+			DocSyncGUI.error("Cannot remove RSSChanel.");
+		}
 	}
 
 	public List<String> getRssChannelList() {
-		return cloud.getRssChannelList();
+		List<String> list = new LinkedList<String>();
+		try {
+			list = cloud.getRssChannelList();
+		} catch (Exception ex) {
+			log.error("Cannot fetch RSS chanels.", ex);
+			DocSyncGUI.error("Cannot fetch RSS chanels.");
+		}
+		return list;
 	}
 
 	public List<RSSItem> refreshAndGetRssItems() {
-		cloud.updateAll();
-		return cloud.getRSSItems();
+		List<RSSItem> list = new LinkedList<RSSItem>();
+		try {
+			cloud.updateAll();
+			list = cloud.getRSSItems();
+		} catch (Exception ex) {
+			log.error("Cannot fetch updated RSS messages.", ex);
+			DocSyncGUI.error("Cannot fetch updated RSS messages.");
+		}
+		return list;
 	}
 
 	public void updateRSSItem(RSSItem rssItem) {
-		cloud.updateRSSItem(rssItem);
+		try {
+			cloud.updateRSSItem(rssItem);
+		} catch (Exception ex) {
+			log.error("Cannot update RSS messages.", ex);
+			DocSyncGUI.error("Cannot update RSS messages.");
+		}
 	}
 
 	public List<RSSItem> getAllRSSItems() {
-		return cloud.getRSSItems();
+		List<RSSItem> list = new LinkedList<RSSItem>();
+		try {
+			list = cloud.getRSSItems();
+		} catch (Exception ex) {
+			log.error("Cannot fetch RSS messages !!.", ex);
+			DocSyncGUI.error("Cannot fetch RSS messages !!.");
+		}
+		return list;
 	}
 }
