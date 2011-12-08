@@ -35,6 +35,7 @@ public class RSSReader {
 	}
 	
 	public void updateAll() {
+		LOGGER.debug("Updating all rss channels.");
 		for(String channelAddress : getRssChannelList() ) {
 			update(channelAddress);
 		}

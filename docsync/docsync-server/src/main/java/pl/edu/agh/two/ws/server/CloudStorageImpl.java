@@ -1,5 +1,6 @@
 package pl.edu.agh.two.ws.server;
 
+import java.math.BigInteger;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import pl.edu.agh.two.ws.dao.CloudFileDAO;
+import sun.security.util.BigInt;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
@@ -80,10 +82,15 @@ public class CloudStorageImpl implements CloudStorage {
 	public void pushMetadata(CloudFileInfo fileInfo) {
 		LOGGER.debug("Pushing metadata for file " + fileInfo);
 		CloudFile file = cloudFileDAO.findCloudFile(fileInfo.getHash());
-		IMetadata md = fileInfo.getMetadata();
-		md.setVersion(md.getVersion() + 1);
-		file.setMetadata(md);
-		cloudFileDAO.updateCloudFile(file);
+		
+		if (file == null) {
+			LOGGER.error(String.format("File not found %s, hash %s", fileInfo.getName(), fileInfo.getHash()));	
+		} else {
+			IMetadata md = fileInfo.getMetadata();
+			md.setVersion(md.getVersion() + 1);
+			file.setMetadata(md);
+			cloudFileDAO.updateCloudFile(file);
+		}
 	}
 
 	@Override
@@ -92,7 +99,7 @@ public class CloudStorageImpl implements CloudStorage {
 	}
 
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
-		return Arrays.toString(DigestUtils.md5(content));
+		return new BigInteger(1, DigestUtils.md5(content)).toString(16);
 	}
 
 	@Override

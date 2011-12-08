@@ -14,13 +14,12 @@
 		http://jax-ws.dev.java.net/spring/servlet
 		http://jax-ws.dev.java.net/spring/servlet.xsd
 		http://www.springframework.org/schema/tx 
-		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-		http://www.springframework.org/schema/aop
-		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
-		
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	
+	<!-- Used for EntityManager injection (@PersistenceContext) -->
+	
 	<context:component-scan base-package="pl.edu.agh.two.ws.server" />
 	<context:annotation-config/>
-	<tx:annotation-driven mode="proxy"/>
 	
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
 		<property name="persistenceUnitName" value="serverUnit"/>
@@ -41,6 +40,8 @@
 		<constructor-arg ref="rssReader"/>
 	</bean>
 	
+	<!-- Enforce @Transaction annotations -->
+	
 	<bean id="baseTX" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="transactionAttributes">
@@ -53,19 +54,42 @@
 	<bean id="cloudFileDAOTX" parent="baseTX">
 		<property name="target" ref="cloudFileDAO"/>
 	</bean>
-	
 	<bean id="rssItemDAOTX" parent="baseTX">
 		<property name="target" ref="rssItemDAO"/>
 	</bean>
-	
 	<bean id="rssChannelDAOTX" parent="baseTX">
 		<property name="target" ref="rssChannelDAO"/>
 	</bean>
+	
+	<!-- Exspose cloud storage web service, make sure WSSpringServlet is also mapped to this url -->
 	
     <wss:binding url="/CloudStorage">
         <wss:service>
             <ws:service bean="#cloudStorage" impl="pl.edu.agh.two.ws.server.CloudStorageImpl"/>
         </wss:service>
     </wss:binding>
-
+	
+	
+	<!-- Periodically refresh RSS -->
+	
+	<bean id="rssCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="refreshRSSJob" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+	</bean>
+	
+	<bean id="refreshRSSJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="rssReader" />
+		<property name="targetMethod" value="updateAll" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+			<list><ref bean="refreshRSSJob" /></list>
+		</property>
+		<property name="triggers">
+			<list><ref bean="rssCronTrigger" /></list>
+		</property>
+	</bean>
+	
 </beans>
