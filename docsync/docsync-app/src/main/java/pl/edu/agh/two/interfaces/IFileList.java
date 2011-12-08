@@ -1,7 +1,9 @@
 package pl.edu.agh.two.interfaces;
 
-import pl.edu.agh.two.ws.IMetadata;
+import java.util.List;
+
 import pl.edu.agh.two.file.DocSyncFile;
+import pl.edu.agh.two.ws.IMetadata;
 
 public interface IFileList {
 	/**
@@ -50,5 +52,7 @@ public interface IFileList {
 	 */
 	public void updateFile(DocSyncFile file, IMetadata metadata);
 
+	public List<DocSyncFile> getDocSyncFileList();
+	
 	public void clear();
 }

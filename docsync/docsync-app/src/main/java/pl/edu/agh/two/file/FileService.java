@@ -2,6 +2,8 @@ package pl.edu.agh.two.file;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileService;
 import pl.edu.agh.two.utils.ConfigReader;
 import pl.edu.agh.two.ws.CloudFile;
@@ -13,6 +15,7 @@ import javax.xml.ws.Service;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -153,8 +156,23 @@ public class FileService implements IFileService {
 
 	@Override
 	public List<CloudFileInfo> getFilesWithoutContent() {
-		List<CloudFileInfo> cloudFileInfos = cloud.getFiles();
-		return cloudFileInfos;
+		List<CloudFileInfo> returnList = new ArrayList<CloudFileInfo>();
+		List<DocSyncFile> docSyncFileList =  DocSyncGUI.getFrame().getFileList().getDocSyncFileList();
+		for(CloudFileInfo cloudFileInfo :cloud.getFiles()) {
+			boolean found = false;
+			for (DocSyncFile docSyncFile : docSyncFileList) {
+				if(docSyncFile.getHash().equals(cloudFileInfo.getHash())) {
+					found = true;
+					if(docSyncFile.getMeta().getVersion()<cloudFileInfo.getMetadata().getVersion()) {
+						returnList.add(cloudFileInfo);
+					}
+				}
+			}
+			if (!found) {
+				returnList.add(cloudFileInfo);
+			}
+		}
+		return returnList;
 	}
 
 	@Override
