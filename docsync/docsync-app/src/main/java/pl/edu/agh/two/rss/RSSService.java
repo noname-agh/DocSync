@@ -53,7 +53,8 @@ public class RSSService {
 	}
 
 	public List<RSSItem> refreshAndGetRssItems() {
-		return cloud.getRSSItems(); // WARNING: without forcing update
+		cloud.updateAll();
+		return cloud.getRSSItems();
 	}
 
 	public void updateRSSItem(RSSItem rssItem) {

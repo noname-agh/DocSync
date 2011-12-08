@@ -17,8 +17,7 @@ import java.util.List;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {
-	private static final Logger log = LoggerFactory
-			.getLogger(CloudStorageImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(CloudStorageImpl.class);
 
 	private EntityManagerFactory emf;
 
@@ -104,8 +103,7 @@ public class CloudStorageImpl implements CloudStorage {
 		List fileList = null;
 		try {
 			EntityManager em = emf.createEntityManager();
-			fileList = em.createQuery("from CloudFile", CloudFile.class)
-					.getResultList();
+			fileList = em.createQuery("from CloudFile", CloudFile.class).getResultList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -126,10 +124,15 @@ public class CloudStorageImpl implements CloudStorage {
 		em.getTransaction().commit();
 	}
 
+	@Override
+	public void updateAll() {
+		RSSReader.getInstance().updateAll();
+	}
+
 	private String computeHash(byte[] content) throws NoSuchAlgorithmException {
 		return Arrays.toString(DigestUtils.md5(content));
 	}
-	
+
 	public List<RSSItem> getRSSItems() {
 		return RSSReader.getInstance().getRSSItems();
 	}

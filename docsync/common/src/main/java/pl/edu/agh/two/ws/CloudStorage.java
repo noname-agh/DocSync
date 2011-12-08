@@ -38,6 +38,8 @@ public interface CloudStorage {
 
 	//CloudMetadata pullMetadata(CloudFileInfo file);
 
+	void updateAll();
+
 	List<RSSItem> getRSSItems();
 
 	List<String> getRssChannelList();
