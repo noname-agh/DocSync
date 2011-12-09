@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +20,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
-import javax.xml.crypto.Data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,8 +87,14 @@ public class DocSyncGUI extends JFrame {
 		// Open PDFs using special opener, and use default for other file types.
 		FileOpenerWrapper fileOpener = new FileOpenerWrapper();
 		fileOpener.registerOpener("pdf", new PDFFileOpener());
-		fileList.addMouseListener(new OpenFileAction(fileOpener));
-		rssList.addMouseListener(new OpenRSSAction());
+		
+		OpenFileAction openFileAction = new OpenFileAction(fileOpener);
+		fileList.addMouseListener(openFileAction);
+		fileList.addKeyListener(openFileAction);
+		
+		OpenRSSAction openRSSAction = new OpenRSSAction();
+		rssList.addMouseListener(openRSSAction);
+		rssList.addKeyListener(openRSSAction);
 
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
