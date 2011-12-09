@@ -94,6 +94,10 @@ public class RSSReader {
 	}
 	
 	public void updateRSSItem(RSSItem item) {
+		RSSItem existingItem = rssItemDAO.findRSSItem(item.getGuid());
+		if (existingItem != null) {
+			item.setReaded(existingItem.getReaded() || item.getReaded());
+		}
 		rssItemDAO.updateRSSItem(item);
 		LOGGER.info("RSS Item updated - " + item.getTitle());
 	}

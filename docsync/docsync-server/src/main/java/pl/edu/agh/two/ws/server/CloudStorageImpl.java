@@ -9,11 +9,9 @@ import pl.edu.agh.two.ws.*;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import pl.edu.agh.two.ws.dao.CloudFileDAO;
-import sun.security.util.BigInt;
 
 @WebService(endpointInterface = "pl.edu.agh.two.ws.CloudStorage", serviceName = "CloudStorage")
 public class CloudStorageImpl implements CloudStorage {

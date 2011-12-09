@@ -7,5 +7,7 @@ public interface RSSItemDAO {
 
 	List<RSSItem> getRSSItems();
 
+	RSSItem findRSSItem(String guid);
+	
 	void updateRSSItem(RSSItem rssItem);
 }
