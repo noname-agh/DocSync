@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.gui.DocSyncGUI;
-import pl.edu.agh.two.interfaces.IFileList;
 import pl.edu.agh.two.interfaces.IFileService;
 
 import java.awt.event.ActionEvent;
@@ -20,13 +19,8 @@ public class GetAllFilesAction implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		IFileService fileService = FileService.getInstance();
 		List<DocSyncFile> list = fileService.getAllFilesWithContent();
-
-		IFileList fileList = DocSyncGUI.getFrame().getFileList();
-		fileList.clear();
-		for (DocSyncFile file : list) {
-			fileList.add(file);
-		}
-		DocSyncGUI.refreshFileList();
+		
+		DocSyncGUI.addFilesToList(list, true);
 		log.debug("All files fetched from server.");
 	}
 

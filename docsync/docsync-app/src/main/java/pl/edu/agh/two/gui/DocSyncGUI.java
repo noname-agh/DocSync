@@ -31,6 +31,7 @@ import pl.edu.agh.two.file.PDFFileOpener;
 import pl.edu.agh.two.gui.actions.AddFileAction;
 import pl.edu.agh.two.gui.actions.ExitAction;
 import pl.edu.agh.two.gui.actions.GetAllFilesAction;
+import pl.edu.agh.two.gui.actions.GetFilesListAction;
 import pl.edu.agh.two.gui.actions.GetLogAction;
 import pl.edu.agh.two.gui.actions.OpenFileAction;
 import pl.edu.agh.two.gui.actions.OpenRSSAction;
@@ -42,13 +43,10 @@ import pl.edu.agh.two.interfaces.IFileList;
  * TODO: add comments.
  * <p/>
  * Creation date: 2011.10.27
- *
+ * 
  * @author Tomasz Zdybał
  */
 public class DocSyncGUI extends JFrame {
-	/**
-	 * Logger.
-	 */
 	private static final Logger log = LoggerFactory.getLogger(DocSyncGUI.class);
 
 	private static DocSyncGUI frame;
@@ -58,7 +56,8 @@ public class DocSyncGUI extends JFrame {
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
-	private static final FileListPersistence fileListPersistence = new FileListPersistence(storagePath);
+	private static final FileListPersistence fileListPersistence = new FileListPersistence(
+			storagePath);
 
 	public DocSyncGUI() throws HeadlessException {
 		super();
@@ -81,17 +80,16 @@ public class DocSyncGUI extends JFrame {
 		initMenu();
 		getFrame().setLayout(new BorderLayout());
 
-
 		JTabbedPane tabs = new JTabbedPane();
 
 		// Open PDFs using special opener, and use default for other file types.
 		FileOpenerWrapper fileOpener = new FileOpenerWrapper();
 		fileOpener.registerOpener("pdf", new PDFFileOpener());
-		
+
 		OpenFileAction openFileAction = new OpenFileAction(fileOpener);
 		fileList.addMouseListener(openFileAction);
 		fileList.addKeyListener(openFileAction);
-		
+
 		OpenRSSAction openRSSAction = new OpenRSSAction();
 		rssList.addMouseListener(openRSSAction);
 		rssList.addKeyListener(openRSSAction);
@@ -100,7 +98,8 @@ public class DocSyncGUI extends JFrame {
 		fileList.setFillsViewportHeight(true);
 		fileList.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 		fileList.getColumnModel().getColumn(1).setMaxWidth(150);
-		fileList.setRowSorter(new TableRowSorter<FileTableModel>((FileTableModel) fileList.getModel()));
+		fileList.setRowSorter(new TableRowSorter<FileTableModel>(
+				(FileTableModel) fileList.getModel()));
 		JScrollPane filesScrollPane = new JScrollPane(fileList);
 		JScrollPane rssScrollPane = new JScrollPane(rssList);
 		getFrame().add(tabs);
@@ -131,6 +130,10 @@ public class DocSyncGUI extends JFrame {
 		getAllFilesItem.addActionListener(new GetAllFilesAction());
 		file.add(getAllFilesItem);
 
+		JMenuItem getFilesListItem = new JMenuItem("Get files...");
+		getFilesListItem.addActionListener(new GetFilesListAction());
+		file.add(getFilesListItem);
+		
 		JMenu rssManager = new JMenu("RSS");
 		menuBar.add(rssManager);
 		JMenuItem rssManagerItem = new JMenuItem("RSS Manager");
@@ -138,7 +141,8 @@ public class DocSyncGUI extends JFrame {
 		rssManager.add(rssManagerItem);
 
 		JMenuItem rssRefreshItem = new JMenuItem("Refresh messages");
-		rssRefreshItem.addActionListener(new RSSRefreshAction(rssList.getModel()));
+		rssRefreshItem.addActionListener(new RSSRefreshAction(rssList
+				.getModel()));
 		rssManager.add(rssRefreshItem);
 
 		file.add(new JSeparator());
@@ -146,7 +150,7 @@ public class DocSyncGUI extends JFrame {
 		JMenuItem exitItem = new JMenuItem("Exit");
 		file.add(exitItem);
 		exitItem.addActionListener(new ExitAction());
-		
+
 		JMenuItem logItem = new JMenuItem("Log");
 		logItem.addActionListener(new GetLogAction());
 		menuBar.add(logItem);
@@ -183,7 +187,8 @@ public class DocSyncGUI extends JFrame {
 	public static void saveListAndExit() {
 		FileTableModel model = (FileTableModel) getFrame().getFileList();
 
-		FileListPersistence flp = new FileListPersistence(DocSyncGUI.getStoragePath());
+		FileListPersistence flp = new FileListPersistence(
+				DocSyncGUI.getStoragePath());
 		try {
 			flp.save(model.getDocSyncFileList());
 		} catch (IOException e) {
@@ -191,21 +196,32 @@ public class DocSyncGUI extends JFrame {
 		}
 		System.exit(0);
 	}
-	
+
+	public static void addFilesToList(java.util.List<DocSyncFile> list,
+			boolean clear) {
+		IFileList fileList = DocSyncGUI.getFrame().getFileList();
+		if (clear)
+			fileList.clear();
+		for (DocSyncFile file : list) {
+			fileList.add(file);
+		}
+		refreshFileList();
+	}
+
 	public static List<String> getLogList() {
 		return DocSyncGUI.logList;
 	}
-	
+
 	public static void error(String errorMsg) {
 		DocSyncGUI.logList.add(new Date() + " [ERROR] " + errorMsg);
 		JOptionPane.showMessageDialog(getFrame(), errorMsg);
 	}
-	
+
 	public static void debug(String debugMsg) {
 		DocSyncGUI.logList.add(new Date() + " [DEBUG] " + debugMsg);
 		JOptionPane.showMessageDialog(getFrame(), debugMsg);
 	}
-	
+
 	public static void info(String infoMsg) {
 		DocSyncGUI.logList.add(new Date() + " [INFO] " + infoMsg);
 		JOptionPane.showMessageDialog(getFrame(), infoMsg);
