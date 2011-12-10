@@ -19,12 +19,13 @@ import org.slf4j.LoggerFactory;
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileService;
 import pl.edu.agh.two.utils.ConfigReader;
+import pl.edu.agh.two.utils.WebServiceProxy;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudStorage;
 
 public class FileService implements IFileService {
-	private static final Logger log = LoggerFactory
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FileService.class);
 
 	public static final String wsUrl = ConfigReader.getInstance().getProperty(
@@ -40,13 +41,10 @@ public class FileService implements IFileService {
 	private static IFileService fileService;
 
 	private FileService() {
-		Service service = null;
 		try {
-			service = Service.create(new URL(wsUrl), new QName(wsNamespace,
-					wsName));
-			cloud = service.getPort(CloudStorage.class);
+			cloud = WebServiceProxy.create(new URL(wsUrl), new QName(wsNamespace, wsName), CloudStorage.class);
 		} catch (Exception e) {
-			log.error("Cannot create service.", e);
+			LOGGER.error("Cannot create service.", e);
 		}
 	}
 
@@ -86,7 +84,7 @@ public class FileService implements IFileService {
 				list.add(createDocSyncFileFromCloudFile(cloudFile));
 			}
 		} catch (Exception ex) {
-			log.error("Cannot fetch files from server.", ex);
+			LOGGER.error("Cannot fetch files from server.", ex);
 			DocSyncGUI.error("Cannot fetch files from server.");
 		}
 		return list;
@@ -102,7 +100,7 @@ public class FileService implements IFileService {
 			fileInfo.setMetadata(file.getMeta());
 			cloud.pushMetadata(fileInfo);
 		} catch (Exception ex) {
-			log.error("Cannot push metadata.", ex);
+			LOGGER.error("Cannot push metadata.", ex);
 			DocSyncGUI.error("Cannot push metadata.");
 		}
 	}
@@ -125,7 +123,7 @@ public class FileService implements IFileService {
 			// Before converting to an int type, check
 			// to ensure that file is not larger than Integer.MAX_VALUE.
 			if (length > Integer.MAX_VALUE) {
-				log.warn("File %s is to large (filepath: %s)", file.getName(),
+				LOGGER.warn("File %s is to large (filepath: %s)", file.getName(),
 						file.getAbsolutePath());
 				return null;
 			}
@@ -168,7 +166,7 @@ public class FileService implements IFileService {
 			docsyncFile.setHash(cloudFile.getHash());
 			return docsyncFile;
 		} catch (Exception ex) {
-			log.error("Cannot get files content.", ex);
+			LOGGER.error("Cannot get files content.", ex);
 			DocSyncGUI.error("Cannot get files content.");
 		}
 		return null;
@@ -201,7 +199,7 @@ public class FileService implements IFileService {
 				}
 			}
 		} catch (Exception ex) {
-			log.error("Cannot get files without content.", ex);
+			LOGGER.error("Cannot get files without content.", ex);
 			DocSyncGUI.error("Cannot get files without content.");
 		}
 		return returnList;
@@ -217,7 +215,7 @@ public class FileService implements IFileService {
 				list.add(file);
 			}
 		} catch (Exception ex) {
-			log.error("Cannot get files.", ex);
+			LOGGER.error("Cannot get files.", ex);
 			DocSyncGUI.error("Cannot get files.");
 		}
 		return list;
