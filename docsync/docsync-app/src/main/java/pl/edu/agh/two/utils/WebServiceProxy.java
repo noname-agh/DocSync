@@ -35,11 +35,10 @@ public class WebServiceProxy<T> implements InvocationHandler {
 	}
 
 	private T getServiceProxy() throws WebServiceException {
-		if (serviceProxy != null) {
-			return serviceProxy;
-		} else {
-			return createServiceProxy();
-		}
+		if (serviceProxy == null) {
+			serviceProxy = createServiceProxy();
+		} 
+		return serviceProxy;
 	}
 
 	private T createServiceProxy() throws WebServiceException {
