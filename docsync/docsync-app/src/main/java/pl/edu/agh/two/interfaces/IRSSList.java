@@ -27,5 +27,6 @@ public interface IRSSList {
 	
 	void addItems(List<RSSItem> items);
 
+	public List<RSSItem> getRSSItemList();
 
 }

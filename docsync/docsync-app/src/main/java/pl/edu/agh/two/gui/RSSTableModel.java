@@ -34,19 +34,6 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	private List<RSSItem> items = new ArrayList<RSSItem>();
 
-	public RSSTableModel() {
-		RSSItem item = new RSSItem();
-		item.setTitle("Title");
-		item.setLink("http://www.archlinux.org/feeds/packages/");
-		item.setDescription("description");
-		items.add(item);
-
-		RSSItem item2 = new RSSItem();
-		item2.setTitle("Title");
-		item2.setLink("link");
-		items.add(item2);
-	}
-
 	@Override
 	public int getRowCount() {
 		return items.size();
@@ -120,12 +107,17 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	@Override
 	public void addItems(List<RSSItem> items) {
-		items.addAll(items);
-		sortItems(items);
+		this.items.addAll(items);
+		sortItems(this.items);
 	}
 
 	private void sortItems(List<RSSItem> items) {
 		Collections.sort(items, new RSSItemComparator());
+	}
+
+	@Override
+	public List<RSSItem> getRSSItemList() {
+		return items;
 	}
 
 	private static class RSSItemComparator implements Comparator<RSSItem> {

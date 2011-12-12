@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.edu.agh.two.file.DocSyncFile;
-import pl.edu.agh.two.file.FileListPersistence;
+import pl.edu.agh.two.file.ListPersistence;
 import pl.edu.agh.two.file.FileOpenerWrapper;
 import pl.edu.agh.two.file.PDFFileOpener;
 import pl.edu.agh.two.gui.actions.AddFileAction;
@@ -38,6 +38,8 @@ import pl.edu.agh.two.gui.actions.OpenRSSAction;
 import pl.edu.agh.two.gui.actions.RSSManagerAction;
 import pl.edu.agh.two.gui.actions.RSSRefreshAction;
 import pl.edu.agh.two.interfaces.IFileList;
+import pl.edu.agh.two.interfaces.IRSSList;
+import pl.edu.agh.two.ws.RSSItem;
 
 /**
  * TODO: add comments.
@@ -47,7 +49,7 @@ import pl.edu.agh.two.interfaces.IFileList;
  * @author Tomasz Zdybał
  */
 public class DocSyncGUI extends JFrame {
-	private static final Logger log = LoggerFactory.getLogger(DocSyncGUI.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocSyncGUI.class);
 
 	private static DocSyncGUI frame;
 	private static JTable fileList;
@@ -56,8 +58,10 @@ public class DocSyncGUI extends JFrame {
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
-	private static final FileListPersistence fileListPersistence = new FileListPersistence(
-			storagePath);
+	private static final ListPersistence<DocSyncFile> fileListPersistence =
+			new ListPersistence<DocSyncFile>(storagePath + ".file");
+	private static final ListPersistence<RSSItem> rssListPersistence = 
+			new ListPersistence<RSSItem>(storagePath + ".rss");
 
 	public DocSyncGUI() throws HeadlessException {
 		super();
@@ -111,7 +115,17 @@ public class DocSyncGUI extends JFrame {
 				DocSyncGUI.getFrame().getFileList().add(dcf);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			final String msg = "Error loading persisted files.";
+			LOGGER.error(msg, e);
+			DocSyncGUI.error(msg);
+		}
+		try {
+			IRSSList list = DocSyncGUI.getFrame().getRSSList();
+			list.addItems(rssListPersistence.load());
+		} catch (IOException e) {
+			final String msg = "Error loading persisted rss items.";
+			LOGGER.error(msg, e);
+			DocSyncGUI.error(msg);
 		}
 
 		DocSyncGUI.refreshFileList();
@@ -175,6 +189,10 @@ public class DocSyncGUI extends JFrame {
 	public IFileList getFileList() {
 		return (IFileList) fileList.getModel();
 	}
+	
+	public IRSSList getRSSList() {
+		return (IRSSList) rssList.getModel();
+	}
 
 	public static void refreshFileList() {
 		((AbstractTableModel) fileList.getModel()).fireTableDataChanged();
@@ -185,14 +203,18 @@ public class DocSyncGUI extends JFrame {
 	}
 
 	public static void saveListAndExit() {
-		FileTableModel model = (FileTableModel) getFrame().getFileList();
-
-		FileListPersistence flp = new FileListPersistence(
-				DocSyncGUI.getStoragePath());
+		IFileList fileModel = (IFileList) getFrame().getFileList();
+		IRSSList rssModel = (IRSSList) getFrame().getRSSList();
+		
 		try {
-			flp.save(model.getDocSyncFileList());
+			fileListPersistence.save(fileModel.getDocSyncFileList());
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error when saving file list.", e);
+		}
+		try {
+			rssListPersistence.save(rssModel.getRSSItemList());
+		} catch (IOException e) {
+			LOGGER.error("Error when saving rss item list.", e);
 		}
 		System.exit(0);
 	}

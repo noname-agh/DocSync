@@ -19,7 +19,7 @@ public class FileListPersistenceTest {
 			f.createNewFile();
 		}
 
-		FileListPersistence flp = new FileListPersistence(f.getAbsolutePath());
+		ListPersistence<DocSyncFile> flp = new ListPersistence<DocSyncFile>(f.getAbsolutePath());
 
 		DocSyncFile pdf = new DocSyncFile("src/main/resources/doc.pdf");
 		PDFMetadata.setPageNumber(pdf.getMeta(), 23);
