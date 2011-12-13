@@ -82,7 +82,8 @@ public class GetFilesListAction implements ActionListener {
 
 	private void initData() {
 		List<CloudFileInfo> list = fileService.getFilesWithoutContent();
-
+		if(model.getSize() != 0)
+			model.clear();
 		for (CloudFileInfo file : list)
 			model.addElement(file);
 	}

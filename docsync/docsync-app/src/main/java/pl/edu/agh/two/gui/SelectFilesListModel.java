@@ -37,4 +37,8 @@ public class SelectFilesListModel implements ListModel {
 	public CloudFileInfo getCloudFileInfoAt(int index) {
 		return fileList.get(index);
 	}
+	
+	public void clear() {
+		fileList.clear();
+	}
 }

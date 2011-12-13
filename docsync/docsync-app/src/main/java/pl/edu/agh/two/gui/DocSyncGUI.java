@@ -165,9 +165,11 @@ public class DocSyncGUI extends JFrame {
 		file.add(exitItem);
 		exitItem.addActionListener(new ExitAction());
 
-		JMenuItem logItem = new JMenuItem("Log");
-		logItem.addActionListener(new GetLogAction());
-		menuBar.add(logItem);
+		JMenu log = new JMenu("Log");
+		menuBar.add(log);
+		JMenuItem showLog = new JMenuItem("Open log");
+		showLog.addActionListener(new GetLogAction());
+		log.add(showLog);
 
 		getFrame().addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(WindowEvent winEvt) {
