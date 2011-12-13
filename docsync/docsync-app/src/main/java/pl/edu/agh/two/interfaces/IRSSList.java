@@ -12,10 +12,6 @@ import pl.edu.agh.two.ws.RSSItem;
  * @author Tomasz Zdybał
  */
 public interface IRSSList {
-	/**
-	 * Pobranie listy z serwera
-	 */
-	void getList();
 
 	/**
 	 * Zwraca RSSItem z wiersza i

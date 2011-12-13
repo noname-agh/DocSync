@@ -83,24 +83,6 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 	}
 
 	@Override
-	public void getList() {
-		log.info("Getting RSS items from server");
-
-		// clear list
-		items.clear();
-
-		// get messages
-		RSSService service = RSSService.getInstance();
-		items.addAll(service.getAllRSSItems());
-
-		// sort
-		sortItems(items);
-
-		// refresh
-		DocSyncGUI.refreshRSSList();
-	}
-
-	@Override
 	public RSSItem getItem(int i) {
 		return items.get(i);
 	}
