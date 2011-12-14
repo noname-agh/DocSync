@@ -5,6 +5,9 @@ import pl.edu.agh.two.gui.RSSTableModel;
 import pl.edu.agh.two.rss.RSSService;
 import pl.edu.agh.two.ws.RSSItem;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
@@ -22,7 +25,7 @@ public class RSSRefreshAction implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        SwingWorker worker = new SwingWorker<Void, Void>() {
+        SwingWorker<List<RSSItem>, Void> worker = new SwingWorker<List<RSSItem>, Void>() {
             @Override
             public List<RSSItem> doInBackground() {
                 RSSService rssService = RSSService.getInstance();
