@@ -42,7 +42,7 @@ public class SaveExitPdfAction implements WindowListener {
 	@Override
 	public void windowClosing(WindowEvent e) {
 		int pageNr = controller.getCurrentPageNumber();
-		IMetadata metadata = new Metadata();
+		IMetadata metadata = file.getMeta();
 		PDFMetadata.setPageNumber(metadata, pageNr);
 		fileList.updateFile(file, metadata);
 		log.info("Saving " + file + " on page " + pageNr + " and Exiting...");

@@ -85,7 +85,6 @@ public class CloudStorageImpl implements CloudStorage {
 			LOGGER.error(String.format("File not found %s, hash %s", fileInfo.getName(), fileInfo.getHash()));	
 		} else {
 			IMetadata md = fileInfo.getMetadata();
-			md.setVersion(md.getVersion() + 1);
 			file.setMetadata(md);
 			cloudFileDAO.updateCloudFile(file);
 		}
