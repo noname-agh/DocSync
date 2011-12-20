@@ -13,12 +13,13 @@ import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.ws.IMetadata;
 
 public class FileTableModel extends AbstractTableModel implements IFileList {
-	private static final ILogger LOGGER = LoggerFactory.getLogger(FileTableModel.class, DocSyncGUI.getFrame());
+	private static final ILogger LOGGER = LoggerFactory.getLogger(
+			FileTableModel.class, DocSyncGUI.getFrame());
 
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<DocSyncFile> files;
-	protected String[] columnNames = new String[]{"path", "extension"};
-	protected Class[] columnClasses = new Class[]{String.class, String.class};
+	protected String[] columnNames = new String[] { "path", "extension" };
+	protected Class[] columnClasses = new Class[] { String.class, String.class };
 
 	public FileTableModel() {
 		this.files = new LinkedList<DocSyncFile>();
@@ -51,13 +52,13 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	public Object getValueAt(int row, int col) {
 
 		switch (col) {
-			case 0:
-				return files.get(row).getPath();
-			case 1:
-				String path = files.get(row).getPath();
-				return getExtension(path);
-			default:
-				return null;
+		case 0:
+			return files.get(row).getPath();
+		case 1:
+			String path = files.get(row).getPath();
+			return getExtension(path);
+		default:
+			return null;
 		}
 	}
 
@@ -71,13 +72,13 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	}
 
 	@Override
-	public DocSyncFile contains(DocSyncFile newfile) {
+	public boolean contains(DocSyncFile newfile) {
 		for (DocSyncFile file : files) {
 			if (file.getHash().equals(newfile.getHash())) {
-				return file;
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 	@Override
@@ -94,23 +95,20 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void delete(DocSyncFile file) {
-		//TODO
+		// TODO
 
 	}
 
 	@Override
 	public void add(DocSyncFile file) {
-		DocSyncFile oldFile = contains(file);
-		if (oldFile == null) {
+		if (contains(file)) {
 			files.add(file);
-		} else {
-			oldFile.setMeta(file.getMeta());
 		}
 	}
 
 	@Override
 	public void updateFile(DocSyncFile file, IMetadata metadata) {
-		metadata.setVersion(metadata.getVersion()+1);
+		metadata.setVersion(metadata.getVersion() + 1);
 		file.setMeta(metadata);
 		FileService.getInstance().pushMetadata(file);
 	}
@@ -123,7 +121,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void addAndSend(DocSyncFile file) {
-		if (contains(file) != null) {
+		if (contains(file)) {
 			return;
 		}
 		try {
@@ -134,6 +132,5 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 			e.printStackTrace();
 		}
 	}
-
 
 }
