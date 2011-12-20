@@ -1,28 +1,29 @@
 package pl.edu.agh.two.gui.actions;
 
+import java.awt.Desktop;
 import java.awt.event.KeyEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.awt.event.MouseEvent;
+import java.net.URI;
+
+import javax.swing.JTable;
+
+import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IRSSList;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.rss.RSSService;
 import pl.edu.agh.two.ws.RSSItem;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.net.URI;
-import pl.edu.agh.two.gui.DocSyncGUI;
-
 public class OpenRSSAction extends MouseKeyAdapter {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(OpenRSSAction.class);
+	private static final ILogger LOGGER = LoggerFactory.getLogger(OpenRSSAction.class, DocSyncGUI.getFrame());
 	private Desktop desktop;
 
 	public OpenRSSAction() {
 		try {
 			desktop = Desktop.getDesktop();
 		} catch (UnsupportedOperationException ex) {
-			LOGGER.warn("Desktop extension not supported!");
+			LOGGER.warn("Desktop extension not supported!", true);
 			desktop = null;
 		}
 	}
@@ -44,7 +45,7 @@ public class OpenRSSAction extends MouseKeyAdapter {
 	}
 
 	private void openSelected(JTable jTable) {
-		LOGGER.debug("Opening RSS Item");
+		LOGGER.debug("Opening RSS Item", false);
 		IRSSList rssList = (IRSSList) jTable.getModel();
 
 		RSSItem rssItem = null;
@@ -60,9 +61,7 @@ public class OpenRSSAction extends MouseKeyAdapter {
 				RSSService.getInstance().updateRSSItem(rssItem);
 			}
 		} catch (Exception e1) {
-			final String errorMsg = "Error opening rss item.";
-			LOGGER.error(errorMsg, e1);
-			DocSyncGUI.error(errorMsg);
+			LOGGER.error("Error opening rss item.", e1, true);
 		}
 	}
 }

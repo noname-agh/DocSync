@@ -1,18 +1,19 @@
 package pl.edu.agh.two.gui;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.edu.agh.two.file.DocSyncFile;
-import pl.edu.agh.two.file.FileService;
-import pl.edu.agh.two.interfaces.IFileList;
-import pl.edu.agh.two.ws.IMetadata;
-
-import javax.swing.table.AbstractTableModel;
 import java.io.IOException;
 import java.util.LinkedList;
 
+import javax.swing.table.AbstractTableModel;
+
+import pl.edu.agh.two.file.DocSyncFile;
+import pl.edu.agh.two.file.FileService;
+import pl.edu.agh.two.interfaces.IFileList;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
+import pl.edu.agh.two.ws.IMetadata;
+
 public class FileTableModel extends AbstractTableModel implements IFileList {
-	private static final Logger log = LoggerFactory.getLogger(FileTableModel.class);
+	private static final ILogger LOGGER = LoggerFactory.getLogger(FileTableModel.class, DocSyncGUI.getFrame());
 
 	private static final long serialVersionUID = 1L;
 	protected LinkedList<DocSyncFile> files;
@@ -70,13 +71,13 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 	}
 
 	@Override
-	public boolean contains(DocSyncFile newfile) {
+	public DocSyncFile contains(DocSyncFile newfile) {
 		for (DocSyncFile file : files) {
 			if (file.getHash().equals(newfile.getHash())) {
-				return true;
+				return file;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	@Override
@@ -99,8 +100,11 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void add(DocSyncFile file) {
-		if (!contains(file)) {
+		DocSyncFile oldFile = contains(file);
+		if (oldFile == null) {
 			files.add(file);
+		} else {
+			oldFile.setMeta(file.getMeta());
 		}
 	}
 
@@ -119,14 +123,14 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void addAndSend(DocSyncFile file) {
-		if (contains(file)) {
+		if (contains(file) != null) {
 			return;
 		}
 		try {
 			FileService.getInstance().sendFile(file);
 			files.add(file);
 		} catch (IOException e) {
-			log.error("Cannot send file.");
+			LOGGER.error("Cannot send file.", true);
 			e.printStackTrace();
 		}
 	}

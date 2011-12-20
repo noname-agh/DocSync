@@ -5,12 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import pl.edu.agh.two.gui.DocSyncGUI;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.utils.ConfigReader;
 import pl.edu.agh.two.utils.WebServiceProxy;
 import pl.edu.agh.two.ws.CloudStorage;
@@ -18,7 +16,7 @@ import pl.edu.agh.two.ws.RSSItem;
 
 
 public class RSSService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(RSSService.class);
+	private static final ILogger LOGGER = LoggerFactory.getLogger(RSSService.class, DocSyncGUI.getFrame());
 
 	public static final String wsUrl = ConfigReader.getInstance().getProperty("ws.url");
 	public static final String wsNamespace = ConfigReader.getInstance().getProperty("ws.ns");
@@ -31,7 +29,7 @@ public class RSSService {
 		try {
 			cloud = WebServiceProxy.create(new URL(wsUrl), new QName(wsNamespace, wsName), CloudStorage.class);
 		} catch (Exception e) {
-			LOGGER.error("Cannot create rss service.", e);
+			LOGGER.error("Cannot create rss service.", e, true);
 		}
 	}
 
@@ -46,8 +44,7 @@ public class RSSService {
 		try {
 			cloud.addChannel(address);
 		} catch (Exception ex) {
-			LOGGER.error("Cannot add RSSChanel.", ex);
-			DocSyncGUI.error("Cannot add RSSChanel.");
+			LOGGER.error("Cannot add RSSChanel.", ex, true);
 		}
 	}
 
@@ -55,8 +52,7 @@ public class RSSService {
 		try {
 			cloud.removeChannel(address);
 		} catch (Exception ex) {
-			LOGGER.error("Cannot remove RSSChanel.", ex);
-			DocSyncGUI.error("Cannot remove RSSChanel.");
+			LOGGER.error("Cannot remove RSSChanel.", ex, true);
 		}
 	}
 
@@ -65,8 +61,7 @@ public class RSSService {
 		try {
 			list = cloud.getRssChannelList();
 		} catch (Exception ex) {
-			LOGGER.error("Cannot fetch RSS chanels.", ex);
-			DocSyncGUI.error("Cannot fetch RSS chanels.");
+			LOGGER.error("Cannot fetch RSS chanels.", ex, true);
 		}
 		return list;
 	}
@@ -77,8 +72,7 @@ public class RSSService {
 			cloud.updateAll();
 			list = cloud.getRSSItems();
 		} catch (Exception ex) {
-			LOGGER.error("Cannot fetch updated RSS messages.", ex);
-			DocSyncGUI.error("Cannot fetch updated RSS messages.");
+			LOGGER.error("Cannot fetch updated RSS messages.", ex, true);
 		}
 		return list;
 	}
@@ -87,8 +81,7 @@ public class RSSService {
 		try {
 			cloud.updateRSSItem(rssItem);
 		} catch (Exception ex) {
-			LOGGER.error("Cannot update RSS messages.", ex);
-			DocSyncGUI.error("Cannot update RSS messages.");
+			LOGGER.error("Cannot update RSS messages.", ex, true);
 		}
 	}
 
@@ -97,8 +90,7 @@ public class RSSService {
 		try {
 			list = cloud.getRSSItems();
 		} catch (Exception ex) {
-			LOGGER.error("Cannot fetch RSS messages !!.", ex);
-			DocSyncGUI.error("Cannot fetch RSS messages !!.");
+			LOGGER.error("Cannot fetch RSS messages !!.", ex, true);
 		}
 		return list;
 	}

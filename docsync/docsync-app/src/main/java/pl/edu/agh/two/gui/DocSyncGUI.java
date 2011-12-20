@@ -5,15 +5,11 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -21,12 +17,9 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pl.edu.agh.two.file.DocSyncFile;
-import pl.edu.agh.two.file.ListPersistence;
 import pl.edu.agh.two.file.FileOpenerWrapper;
+import pl.edu.agh.two.file.ListPersistence;
 import pl.edu.agh.two.file.PDFFileOpener;
 import pl.edu.agh.two.gui.actions.AddFileAction;
 import pl.edu.agh.two.gui.actions.ExitAction;
@@ -39,6 +32,8 @@ import pl.edu.agh.two.gui.actions.RSSManagerAction;
 import pl.edu.agh.two.gui.actions.RSSRefreshAction;
 import pl.edu.agh.two.interfaces.IFileList;
 import pl.edu.agh.two.interfaces.IRSSList;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.ws.RSSItem;
 
 /**
@@ -49,12 +44,11 @@ import pl.edu.agh.two.ws.RSSItem;
  * @author Tomasz Zdybał
  */
 public class DocSyncGUI extends JFrame {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DocSyncGUI.class);
+	private static final ILogger LOGGER = LoggerFactory.getLogger(DocSyncGUI.class, DocSyncGUI.getFrame());
 
 	private static DocSyncGUI frame;
 	private static JTable fileList;
 	private static JTable rssList;
-	private static ArrayList<String> logList = new ArrayList<String>();
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
@@ -115,17 +109,13 @@ public class DocSyncGUI extends JFrame {
 				DocSyncGUI.getFrame().getFileList().add(dcf);
 			}
 		} catch (IOException e) {
-			final String msg = "Error loading persisted files.";
-			LOGGER.error(msg, e);
-			DocSyncGUI.error(msg);
+			LOGGER.error("Error loading persisted files.", e, true);
 		}
 		try {
 			IRSSList list = DocSyncGUI.getFrame().getRSSList();
 			list.addItems(rssListPersistence.load());
 		} catch (IOException e) {
-			final String msg = "Error loading persisted rss items.";
-			LOGGER.error(msg, e);
-			DocSyncGUI.error(msg);
+			LOGGER.error("Error loading persisted rss items.", e, true);
 		}
 
 		DocSyncGUI.refreshFileList();
@@ -211,12 +201,12 @@ public class DocSyncGUI extends JFrame {
 		try {
 			fileListPersistence.save(fileModel.getDocSyncFileList());
 		} catch (IOException e) {
-			LOGGER.error("Error when saving file list.", e);
+			LOGGER.error("Error when saving file list.", e, true);
 		}
 		try {
 			rssListPersistence.save(rssModel.getRSSItemList());
 		} catch (IOException e) {
-			LOGGER.error("Error when saving rss item list.", e);
+			LOGGER.error("Error when saving rss item list.", e, true);
 		}
 		System.exit(0);
 	}
@@ -230,24 +220,5 @@ public class DocSyncGUI extends JFrame {
 			fileList.add(file);
 		}
 		refreshFileList();
-	}
-
-	public static List<String> getLogList() {
-		return DocSyncGUI.logList;
-	}
-
-	public static void error(String errorMsg) {
-		DocSyncGUI.logList.add(new Date() + " [ERROR] " + errorMsg);
-		JOptionPane.showMessageDialog(getFrame(), errorMsg);
-	}
-
-	public static void debug(String debugMsg) {
-		DocSyncGUI.logList.add(new Date() + " [DEBUG] " + debugMsg);
-		JOptionPane.showMessageDialog(getFrame(), debugMsg);
-	}
-
-	public static void info(String infoMsg) {
-		DocSyncGUI.logList.add(new Date() + " [INFO] " + infoMsg);
-		JOptionPane.showMessageDialog(getFrame(), infoMsg);
 	}
 }

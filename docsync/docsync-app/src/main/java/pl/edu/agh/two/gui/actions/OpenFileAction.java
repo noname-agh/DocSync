@@ -1,16 +1,21 @@
 package pl.edu.agh.two.gui.actions;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JTable;
+
 import pl.edu.agh.two.file.FileOpenException;
+import pl.edu.agh.two.file.FileService;
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.gui.FileTableModel;
 import pl.edu.agh.two.interfaces.IFileOpener;
-
-import javax.swing.*;
-import java.awt.event.MouseEvent;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
 
 public class OpenFileAction extends MouseKeyAdapter {
 
+	private static final ILogger LOGGER = LoggerFactory.getLogger(FileService.class, DocSyncGUI.getFrame());
 	IFileOpener opener;
 
 	public OpenFileAction(IFileOpener opener) {
@@ -45,7 +50,7 @@ public class OpenFileAction extends MouseKeyAdapter {
 			try {
 				opener.open(fileList.getRow(row));
 			} catch (FileOpenException ex) {
-				DocSyncGUI.error("Error opening file: " + ex.getMessage());
+				LOGGER.error("Error opening file: " + ex.getMessage(), true);
 			}
 		}
 	}

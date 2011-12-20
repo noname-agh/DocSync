@@ -1,16 +1,16 @@
 package pl.edu.agh.two.gui;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.edu.agh.two.interfaces.IRSSList;
-import pl.edu.agh.two.rss.RSSService;
-import pl.edu.agh.two.ws.RSSItem;
-
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.swing.table.AbstractTableModel;
+
+import pl.edu.agh.two.interfaces.IRSSList;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
+import pl.edu.agh.two.ws.RSSItem;
 
 /**
  * TODO: add comments.
@@ -23,7 +23,7 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 	/**
 	 * Logger.
 	 */
-	private static final Logger log = LoggerFactory.getLogger(RSSTableModel.class);
+	private static final ILogger LOGGER = LoggerFactory.getLogger(RSSTableModel.class, DocSyncGUI.getFrame());
 	private static final String TITLE_CAPTION = "Title";
 	private static final String LINK_CAPTION = "Link";
 	private static final String DESCRIPTION_CAPTION = "Description";
@@ -89,6 +89,7 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 
 	@Override
 	public void addItems(List<RSSItem> items) {
+		this.items.clear();
 		this.items.addAll(items);
 		sortItems(this.items);
 	}

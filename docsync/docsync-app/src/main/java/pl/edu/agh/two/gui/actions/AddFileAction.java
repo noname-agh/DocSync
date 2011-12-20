@@ -51,7 +51,7 @@ public class AddFileAction implements ActionListener {
 
 			log.debug("Opening " + fileName);
 			DocSyncFile f = new DocSyncFile(copyiedFilePath);
-			if (!fileList.contains(f)) {
+			if (fileList.contains(f) == null) {
 				fileList.addAndSend(f);
 				DocSyncGUI.refreshFileList();
 			}
