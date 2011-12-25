@@ -101,7 +101,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void add(DocSyncFile file) {
-		if (contains(file)) {
+		if (!contains(file)) {
 			files.add(file);
 		}
 	}

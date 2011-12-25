@@ -117,7 +117,7 @@ public class FileService implements IFileService {
 			// Before converting to an int type, check
 			// to ensure that file is not larger than Integer.MAX_VALUE.
 			if (length > Integer.MAX_VALUE) {
-				LOGGER.warn("File %s is to large (filepath: %s)", true);
+				LOGGER.warn("File " + file.getName() + " is to large (filepath: " + file.getAbsolutePath() + ")", true);
 				return null;
 			}
 
