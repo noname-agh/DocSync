@@ -45,4 +45,26 @@ public class DocSyncFile implements Serializable {
 	public void setMeta(IMetadata meta) {
 		this.meta = meta;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final DocSyncFile other = (DocSyncFile) obj;
+		if ((this.hash == null) ? (other.hash != null) : !this.hash.equals(other.hash)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 29 * hash + (this.hash != null ? this.hash.hashCode() : 0);
+		return hash;
+	}
 }

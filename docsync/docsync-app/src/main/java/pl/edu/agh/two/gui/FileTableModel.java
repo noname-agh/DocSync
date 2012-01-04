@@ -25,22 +25,27 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 		this.files = new LinkedList<DocSyncFile>();
 	}
 
+	@Override
 	public LinkedList<DocSyncFile> getDocSyncFileList() {
 		return files;
 	}
 
+	@Override
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
+	@Override
 	public int getRowCount() {
 		return files.size();
 	}
 
+	@Override
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
 
+	@Override
 	public Class getColumnClass(int col) {
 		return columnClasses[col];
 	}
@@ -49,6 +54,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 		return files.get(row);
 	}
 
+	@Override
 	public Object getValueAt(int row, int col) {
 
 		switch (col) {
@@ -73,12 +79,7 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public boolean contains(DocSyncFile newfile) {
-		for (DocSyncFile file : files) {
-			if (file.getHash().equals(newfile.getHash())) {
-				return true;
-			}
-		}
-		return false;
+		return files.contains(newfile);
 	}
 
 	@Override
@@ -101,8 +102,11 @@ public class FileTableModel extends AbstractTableModel implements IFileList {
 
 	@Override
 	public void add(DocSyncFile file) {
-		if (!contains(file)) {
+		int index = files.indexOf(file);
+		if (index == -1) {
 			files.add(file);
+		} else {
+			files.set(index, file);
 		}
 	}
 
