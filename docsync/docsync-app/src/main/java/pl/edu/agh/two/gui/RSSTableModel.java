@@ -1,19 +1,14 @@
 package pl.edu.agh.two.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
 import pl.edu.agh.two.interfaces.IRSSList;
 import pl.edu.agh.two.log.ILogger;
 import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.rss.RSSService;
 import pl.edu.agh.two.utils.RSSItemFilterUtil;
 import pl.edu.agh.two.ws.RSSItem;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.*;
 
 /**
  * TODO: add comments.
@@ -62,10 +57,14 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 	public int getRowCount() {
 		return getFilteredItems().size();
 	}
-	
+
 	public List<RSSItem> getFilteredItems() {
 		List<RSSItem> filteredItems = new LinkedList<RSSItem>();
-		for (RSSItem item : items) if (item.getIsShown()) filteredItems.add(item);
+		for (RSSItem item : items) {
+			if (item.getIsShown()) {
+				filteredItems.add(item);
+			}
+		}
 		return filteredItems;
 	}
 
@@ -121,7 +120,7 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 		// get messages
 		RSSService service = RSSService.getInstance();
 		items.addAll(service.getAllRSSItems());
-		
+
 		// sort
 		sortItems(items);
 
@@ -154,7 +153,7 @@ public class RSSTableModel extends AbstractTableModel implements IRSSList {
 	private static class RSSItemComparator implements Comparator<RSSItem> {
 		@Override
 		public int compare(RSSItem rssItem, RSSItem rssItem1) {
-			if (rssItem.getDate() != null) {
+			if (rssItem.getDate() != null && rssItem1.getDate() != null) {
 				return rssItem.getDate().compareTo(rssItem1.getDate());
 			} else {
 				return -1;
