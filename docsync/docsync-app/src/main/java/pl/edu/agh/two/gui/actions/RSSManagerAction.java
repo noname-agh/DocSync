@@ -1,38 +1,19 @@
 package pl.edu.agh.two.gui.actions;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import pl.edu.agh.two.gui.DocSyncGUI;
+import pl.edu.agh.two.rss.RSSService;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.lang.model.util.Elements;
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-
-import org.hibernate.mapping.Collection;
-import org.icepdf.core.pobjects.actions.ActionFactory;
-
-import pl.edu.agh.two.gui.DocSyncGUI;
-import pl.edu.agh.two.rss.RSSService;
 
 public class RSSManagerAction implements ActionListener {
 	private static final String TITLE = "DocSync - RSS Manager";
-	
+
 	private JList list = new JList();
 	private DefaultListModel model = new DefaultListModel();
 
@@ -55,9 +36,8 @@ public class RSSManagerAction implements ActionListener {
 		buttonAdd.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String url = (String) JOptionPane
-						.showInputDialog(dialog, "Add new RSS", "Add new RSS",
-								JOptionPane.PLAIN_MESSAGE);
+				String url = (String) JOptionPane.showInputDialog(dialog, "Add new RSS", "Add new RSS",
+						JOptionPane.PLAIN_MESSAGE);
 				if (url.length() > 0) {
 					model.addElement(url);
 					RSSService rssService = RSSService.getInstance();
@@ -75,7 +55,7 @@ public class RSSManagerAction implements ActionListener {
 				int selected = list.getSelectedIndex();
 				if (selected != -1) {
 					RSSService rssService = RSSService.getInstance();
-					rssService.removeChannel((String)(list.getSelectedValue()));
+					rssService.removeChannel((String) (list.getSelectedValue()));
 					model.remove(selected);
 				}
 			}
@@ -84,7 +64,7 @@ public class RSSManagerAction implements ActionListener {
 
 		JButton buttonOK = new JButton("OK");
 		buttonOK.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				dialog.dispose();
@@ -98,20 +78,23 @@ public class RSSManagerAction implements ActionListener {
 				dialog.dispose();
 			}
 		});
-		
+
 		initData();
 
 		dialog.pack();
+		dialog.setLocationRelativeTo(DocSyncGUI.getFrame());
 		dialog.setVisible(true);
 
 	}
 
 	private void initData() {
 		RSSService rssService = RSSService.getInstance();
-		
+
 		List<String> list = rssService.getRssChannelList();
 		model.clear();
-		for (String channel : list) model.addElement(channel);
+		for (String channel : list) {
+			model.addElement(channel);
+		}
 	}
 
 }

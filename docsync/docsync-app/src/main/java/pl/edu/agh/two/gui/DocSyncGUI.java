@@ -1,50 +1,28 @@
 package pl.edu.agh.two.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.HeadlessException;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
-
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableRowSorter;
-
 import pl.edu.agh.two.file.DocSyncFile;
 import pl.edu.agh.two.file.FileOpenerWrapper;
 import pl.edu.agh.two.file.ListPersistence;
 import pl.edu.agh.two.file.PDFFileOpener;
-import pl.edu.agh.two.gui.actions.AddFileAction;
-import pl.edu.agh.two.gui.actions.ExitAction;
-import pl.edu.agh.two.gui.actions.FilterRSSItemsAction;
-import pl.edu.agh.two.gui.actions.GetAllFilesAction;
-import pl.edu.agh.two.gui.actions.GetFilesListAction;
-import pl.edu.agh.two.gui.actions.GetLogAction;
-import pl.edu.agh.two.gui.actions.OpenFileAction;
-import pl.edu.agh.two.gui.actions.OpenRSSAction;
-import pl.edu.agh.two.gui.actions.RSSManagerAction;
-import pl.edu.agh.two.gui.actions.RSSRefreshAction;
+import pl.edu.agh.two.gui.actions.*;
 import pl.edu.agh.two.interfaces.IFileList;
 import pl.edu.agh.two.interfaces.IRSSList;
 import pl.edu.agh.two.log.ILogger;
 import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.ws.RSSItem;
 
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+
 /**
  * TODO: add comments.
  * <p/>
  * Creation date: 2011.10.27
- * 
+ *
  * @author Tomasz Zdybał
  */
 public class DocSyncGUI extends JFrame {
@@ -65,8 +43,10 @@ public class DocSyncGUI extends JFrame {
 	private static final String TITLE = "DocSync";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
 	private static final String storagePath = "storage";
-	private static final ListPersistence<DocSyncFile> fileListPersistence = new ListPersistence<DocSyncFile>(storagePath + ".file");
-	private static final ListPersistence<RSSItem> rssListPersistence = new ListPersistence<RSSItem>(storagePath + ".rss");
+	private static final ListPersistence<DocSyncFile> fileListPersistence = new ListPersistence<DocSyncFile>(
+			storagePath + ".file");
+	private static final ListPersistence<RSSItem> rssListPersistence = new ListPersistence<RSSItem>(
+			storagePath + ".rss");
 
 	private static final JCheckBox readedCheckbox = new JCheckBox("Readed", true);
 	private static final JCheckBox unreadedCheckbox = new JCheckBox("Unreaded", true);
@@ -106,6 +86,7 @@ public class DocSyncGUI extends JFrame {
 		rssList.addMouseListener(openRSSAction);
 		rssList.addKeyListener(openRSSAction);
 		rssList.getColumnModel().getColumn(0).setMaxWidth(50);
+		rssList.setRowSorter(new TableRowSorter<RSSTableModel>((RSSTableModel) rssList.getModel()));
 
 		fileList.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		fileList.setFillsViewportHeight(true);
@@ -239,8 +220,9 @@ public class DocSyncGUI extends JFrame {
 
 	public static void addFilesToList(java.util.List<DocSyncFile> list, boolean clear) {
 		IFileList fileList = DocSyncGUI.getFrame().getFileList();
-		if (clear)
+		if (clear) {
 			fileList.clear();
+		}
 		for (DocSyncFile file : list) {
 			fileList.add(file);
 		}

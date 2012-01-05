@@ -1,27 +1,19 @@
 package pl.edu.agh.two.gui.actions;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import pl.edu.agh.two.file.FileService;
+import pl.edu.agh.two.gui.DocSyncGUI;
+import pl.edu.agh.two.gui.SelectFilesListModel;
+import pl.edu.agh.two.interfaces.IFileService;
+import pl.edu.agh.two.ws.CloudFileInfo;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-
-import pl.edu.agh.two.file.FileService;
-import pl.edu.agh.two.gui.DocSyncGUI;
-import pl.edu.agh.two.gui.SelectFilesListModel;
-import pl.edu.agh.two.interfaces.IFileService;
-import pl.edu.agh.two.ws.CloudFileInfo;
 
 public class GetFilesListAction implements ActionListener {
 	private static final String TITLE = "DocSync - Select files to sync";
@@ -51,13 +43,14 @@ public class GetFilesListAction implements ActionListener {
 			public void actionPerformed(ActionEvent arg0) {
 				int filesIndices[] = list.getSelectedIndices();
 				List<CloudFileInfo> files = new LinkedList<CloudFileInfo>();
-				for (int index : filesIndices)
+				for (int index : filesIndices) {
 					files.add(model.getCloudFileInfoAt(index));
+				}
 				DocSyncGUI.addFilesToList(fileService.getFiles(files), false);
 			}
 		});
 		buttonsPane.add(buttonAdd);
-		
+
 		JButton buttonClose = new JButton("Close");
 		buttonClose.addActionListener(new ActionListener() {
 			@Override
@@ -77,14 +70,17 @@ public class GetFilesListAction implements ActionListener {
 		initData();
 
 		dialog.pack();
+		dialog.setLocationRelativeTo(DocSyncGUI.getFrame());
 		dialog.setVisible(true);
 	}
 
 	private void initData() {
 		List<CloudFileInfo> list = fileService.getFilesWithoutContent();
-		if(model.getSize() != 0)
+		if (model.getSize() != 0) {
 			model.clear();
-		for (CloudFileInfo file : list)
+		}
+		for (CloudFileInfo file : list) {
 			model.addElement(file);
+		}
 	}
 }
