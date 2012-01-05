@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import org.hibernate.mapping.Collection;
+import org.icepdf.core.pobjects.actions.ActionFactory;
 
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.rss.RSSService;
@@ -80,7 +81,16 @@ public class RSSManagerAction implements ActionListener {
 			}
 		});
 		buttonsPane.add(buttonRemove);
-		
+
+		JButton buttonOK = new JButton("OK");
+		buttonOK.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dialog.dispose();
+			}
+		});
+		buttonsPane.add(buttonOK);
 
 		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
