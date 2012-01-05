@@ -1,38 +1,30 @@
 package pl.edu.agh.two.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IFileService;
-import pl.edu.agh.two.log.*;
+import pl.edu.agh.two.log.ILogger;
+import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.utils.ConfigReader;
 import pl.edu.agh.two.utils.WebServiceProxy;
 import pl.edu.agh.two.ws.CloudFile;
 import pl.edu.agh.two.ws.CloudFileInfo;
 import pl.edu.agh.two.ws.CloudStorage;
 
+import javax.xml.namespace.QName;
+import java.io.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class FileService implements IFileService {
 	private static final ILogger LOGGER = LoggerFactory.getLogger(FileService.class, DocSyncGUI.getFrame());
 
-	public static final String wsUrl = ConfigReader.getInstance().getProperty(
-			"ws.url");
-	public static final String wsNamespace = ConfigReader.getInstance()
-			.getProperty("ws.ns");
-	public static final String wsName = ConfigReader.getInstance().getProperty(
-			"ws.name");
+	public static final String wsUrl = ConfigReader.getInstance().getProperty("ws.url");
+	public static final String wsNamespace = ConfigReader.getInstance().getProperty("ws.ns");
+	public static final String wsName = ConfigReader.getInstance().getProperty("ws.name");
 
-	public static final String storagePath = ConfigReader.getInstance()
-			.getProperty("storage.path");
+	public static final String storagePath = ConfigReader.getInstance().getProperty("storage.path");
 	private static CloudStorage cloud;
 	private static IFileService fileService;
 
@@ -72,9 +64,9 @@ public class FileService implements IFileService {
 		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
 		try {
 			List<CloudFile> cloudFiles = cloud.getAllFilesWithContent();
-			File dir = new File(FileService.storagePath);
+			File dir = new File(storagePath);
 			if (!(dir.exists() && dir.isDirectory())) {
-				new File(FileService.storagePath).mkdirs();
+				new File(storagePath).mkdirs();
 			}
 			for (CloudFile cloudFile : cloudFiles) {
 				list.add(createDocSyncFileFromCloudFile(cloudFile));
@@ -127,15 +119,13 @@ public class FileService implements IFileService {
 			// Read in the bytes
 			int offset = 0;
 			int numRead = 0;
-			while (offset < bytes.length
-					&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 				offset += numRead;
 			}
 
 			// Ensure all the bytes have been read in
 			if (offset < bytes.length) {
-				throw new IOException("Could not completely read file "
-						+ file.getName());
+				throw new IOException("Could not completely read file " + file.getName());
 			}
 
 			return bytes;
@@ -147,8 +137,11 @@ public class FileService implements IFileService {
 	}
 
 	private DocSyncFile createDocSyncFileFromCloudFile(CloudFile cloudFile) {
-		File file = new File(storagePath + System.getProperty("file.separator")
-				+ cloudFile.getName());
+		File dir = new File(storagePath);
+		if (!(dir.exists() && dir.isDirectory())) {
+			new File(storagePath).mkdirs();
+		}
+		File file = new File(storagePath + System.getProperty("file.separator") + cloudFile.getName());
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			fileOutputStream.write(cloudFile.getContent());
@@ -173,15 +166,13 @@ public class FileService implements IFileService {
 	public List<CloudFileInfo> getFilesWithoutContent() {
 		List<CloudFileInfo> returnList = new ArrayList<CloudFileInfo>();
 		try {
-			List<DocSyncFile> docSyncFileList = DocSyncGUI.getFrame()
-					.getFileList().getDocSyncFileList();
+			List<DocSyncFile> docSyncFileList = DocSyncGUI.getFrame().getFileList().getDocSyncFileList();
 			for (CloudFileInfo cloudFileInfo : cloud.getFiles()) {
 				boolean found = false;
 				for (DocSyncFile docSyncFile : docSyncFileList) {
 					if (docSyncFile.getHash().equals(cloudFileInfo.getHash())) {
 						found = true;
-						if (docSyncFile.getMeta().getVersion() < cloudFileInfo
-								.getMetadata().getVersion()) {
+						if (docSyncFile.getMeta().getVersion() < cloudFileInfo.getMetadata().getVersion()) {
 							returnList.add(cloudFileInfo);
 						}
 					}
@@ -201,8 +192,7 @@ public class FileService implements IFileService {
 		List<DocSyncFile> list = new LinkedList<DocSyncFile>();
 		try {
 			for (CloudFileInfo cloudFileInfo : cloudFileInfos) {
-				DocSyncFile file = createDocSyncFileFromCloudFile(cloud
-						.getFileWithContent(cloudFileInfo));
+				DocSyncFile file = createDocSyncFileFromCloudFile(cloud.getFileWithContent(cloudFileInfo));
 				list.add(file);
 			}
 		} catch (Exception ex) {
