@@ -1,12 +1,5 @@
 package pl.edu.agh.two.gui.actions;
 
-import java.awt.Desktop;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.net.URI;
-
-import javax.swing.JTable;
-
 import pl.edu.agh.two.gui.DocSyncGUI;
 import pl.edu.agh.two.interfaces.IRSSList;
 import pl.edu.agh.two.log.ILogger;
@@ -14,8 +7,14 @@ import pl.edu.agh.two.log.LoggerFactory;
 import pl.edu.agh.two.rss.RSSService;
 import pl.edu.agh.two.ws.RSSItem;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.net.URI;
+
 public class OpenRSSAction extends MouseKeyAdapter {
-	
+
 	private static final ILogger LOGGER = LoggerFactory.getLogger(OpenRSSAction.class, DocSyncGUI.getFrame());
 	private Desktop desktop;
 
@@ -50,6 +49,7 @@ public class OpenRSSAction extends MouseKeyAdapter {
 
 		RSSItem rssItem = null;
 		int row = jTable.getSelectedRow();
+		row = jTable.convertRowIndexToModel(row);
 		if (row != -1) {
 			rssItem = rssList.getItem(row);
 		}
